@@ -21,17 +21,24 @@
   .heb { direction: rtl; text-align: right; }
   button, input, select, textarea { font-family: inherit; }
   [draggable=true] { -webkit-user-drag: element; }
-  .drop-highlight { outline: 2px solid #3B82F6 !important; outline-offset: -2px; }
+  @media print {
+    @page { size: A4 landscape; margin: 8mm; }
+    html { font-size: 8.5px !important; }
+    body { background: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .no-print { display: none !important; }
+    .print-root { overflow: visible !important; padding: 0 !important; }
+    .print-root > div { min-width: 0 !important; padding: 0 4px !important; }
+    .class-row { break-inside: avoid; margin-top: 2px !important; }
+    .class-row * { box-shadow: none !important; }
+    .grid-slots { gap: 2px !important; padding: 2px !important; }
+    .grid-slots > div > div { min-height: 36px !important; padding: 2px 4px !important; }
+    .unassigned-section { break-before: page; }
+  }
 </style>
 </head>
 <body>
 <div id="root"></div>
-
-<!-- Drag state lives OUTSIDE React to survive any re-render -->
-<script>
-  window.__drag = null;
-</script>
-
+<script>window.__drag = null;</script>
 <script type="text/babel">
 const { useState, useEffect, useCallback, useRef } = React;
 
@@ -48,7 +55,6 @@ const CAT = {
   "Text":{l:"Text Only",c:"#6B7280",bg:"#F9FAFB",bd:"#E5E7EB"},
   "Skip":{l:"Skip",c:"#9CA3AF",bg:"#F3F4F6",bd:"#D1D5DB"},
 };
-
 const SLOTS = [
   {k:"intro",h:"N.1 הקדמה",e:"Intro",i:"📖",bg:"#DBEAFE"},
   {k:"reg",h:"N.2 ויסות",e:"Regulation",i:"🌬️",bg:"#CFFAFE"},
@@ -58,59 +64,27 @@ const SLOTS = [
   {k:"integ",h:"N.6 אינטגרציה",e:"Integration",i:"🔄",bg:"#FEF3C7"},
   {k:"refl",h:"N.7 רפלקציה",e:"Reflection",i:"📝",bg:"#F3F4F6"},
 ];
-
 const PC = {A:"#1E40AF",B:"#7C3AED",C:"#047857"};
 const uid = () => Math.random().toString(36).substr(2,9);
-const mk = (n,h,v,cat,fl=null,fn="") => ({id:uid(),name:n,heb:h,vid:v,cat,fl,fn});
+const mk = (n,h,v,cat,fl,fn,txt) => ({id:uid(),name:n||"",heb:h||"",vid:v||"",cat:cat||"Skip",fl:fl||null,fn:fn||"",txt:txt||""});
 const clone = o => JSON.parse(JSON.stringify(o));
 
 const IC = [
-  {n:1,t:"יסודות",te:"Foundations",p:"A",th:"מגע ראשון עם SBRT. כלי ויסות בסיסיים. ללא קרב.",
-    s:[mk("What Is Somatic?","מהו סומטי?","1.9","Cat 1"),mk("Diaphragmatic Breathing 5/5","נשימה סרעפתית 5/5","3.1","Cat 3","blocker","File #3 NOT EDITED"),mk("Mind-Body Scan (Standing)","סריקת גוף בעמידה","2.2","Cat 2"),mk("Shake — Basic","שייק בסיסי","4.1","Cat 4","check","File #22 combined 4.1+4.3+4.9"),mk("SKIP","","","Skip",null,"No combat in Class 1"),mk("INTEGRATION: Shakes + Sigh","שייקים + אנחה פיזיולוגית","4.9","Cat 4","check","End of file #22"),mk("Reflection & Closure","רפלקציה וסגירה","","Text",null,"Text + homework")]},
-  {n:2,t:"מודעות",te:"Awareness",p:"A",th:"העמקת אוצר מילים תחושתי. שיום מצבים פנימיים.",
-    s:[mk("Stress Response as a Wave","תגובת הסטרס כגל","1.4","Cat 1"),mk("Diaphragmatic Breathing 5/5","נשימה סרעפתית 5/5","3.1","Cat 3",null,"Reuse — deepen"),mk("Sensations Naming","שיום תחושות","2.1","Cat 2","blocker","File #10 NOT EDITED"),mk("Shake With Weight Transfer","שייק עם העברות משקל","4.2","Cat 4"),mk("SKIP","","","Skip",null,"No combat in Class 2"),mk("INTEGRATION: Scan + Breathing","סריקת גוף + נשימה 5/5","2.4","Cat 2","blocker","File #55 NOT EDITED"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
-  {n:3,t:"התבססות",te:"Grounding",p:"A",th:"עבודה מבנית ראשונה. עמידה קרבית + מטקות.",
-    s:[mk("Using an Anchor","שימוש בעוגנים","1.10","Cat 1"),mk("Breathing Pause — Tension","עצירת נשימה — זיהוי מתח","3.3","Cat 3"),mk("Heavy Hand — Honey Pool","היד הכבדה — בריכת הדבש","9.1","Cat 9",null,"Audio-primary somatic"),mk("Combat Stance — Regular","עמידה קרבית — רגילה","5.2","Cat 5"),mk("Shoulder Paddles — Bi-Lateral","מטקות כתפיים — בילטראלית","5.8","Cat 5"),mk("INTEGRATION: Stance+Paddles+5/5","עמידה + מטקות + נשימה 5/5","5.13","Cat 5"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
-  {n:4,t:"שליטה",te:"Control",p:"A",th:"השהיית תגובה. התקדמות 10/10. סטפינג.",
-    s:[mk("Response Delay Concept","עקרון השהיית התגובה","1.5","Cat 1"),mk("Diaphragmatic Breathing 10/10","נשימה סרעפתית 10/10","3.2","Cat 3",null,"Progression. 3 parts."),mk("Breath Tracking (Saika)","מעקב אחר הנשימה","2.3","Cat 2","check","File #49 needs trim"),mk("Combat Stance Stepping","סטפינג בעמידה קרבית","5.3","Cat 5"),mk("Paddles — Combat Stance","מטקות — בעמידה קרבית","5.11","Cat 5"),mk("INTEGRATION: Wrist + Breathing","תרגילי שורש כף היד + נשימה","8.3","Cat 8"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
-  {n:5,t:"הרחבה",te:"Expansion",p:"B",th:"ויסות משותף. נשימה עם צליל. הכנה לאיגרוף.",
-    s:[mk("Expanding Our Processor","הרחבת המעבד שלנו","1.8","Cat 1"),mk("Breathing with Sound","נשימה עם צליל","3.4","Cat 3",null,"Vagus stimulation"),mk("The Secret Smile","החיוך הנסתר","9.2","Cat 9",null,"Audio-primary somatic"),mk("Paddles — Contra Entries","מטקות — כניסות קונטרה-לטרליות","5.9","Cat 5"),mk("Punching Prep — Fist/Gloves","הכנה לאיגרוף — סגירת אגרוף","7.3","Cat 7"),mk("Text-based integration","שילוב: צליל + מטקות + הכנה","","Text","gap","No INTEGRATION video"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
-  {n:6,t:"מבנה ותנועה",te:"Structure & Motion",p:"B",th:"מדוע הטכנולוגיה. מכניקת איגרוף. מטקות איפסילטרליות.",
-    s:[mk("Why This Technology?","מדוע הטכנולוגיה הזו?","5.7","Cat 5",null,"Educational — methodology"),mk("Breathing Pause","עצירת נשימה","3.6","Cat 3","check","Order uncertain"),mk("Multidirectional Shake","שייק לכמה כיוונים","4.4","Cat 4",null,"Follow-along"),mk("Paddles — Ipsi Entries","מטקות — כניסות איפסי-לטרליות","5.10","Cat 5"),mk("Boxing Mechanics — Whip","מכניקת איגרוף — שוט","7.1","Cat 7",null,"First boxing"),mk("Text-based integration","שילוב: מטקות + שוט + נשימה","","Text","gap","No INTEGRATION video"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
-  {n:7,t:"קואורדינציה",te:"Coordination",p:"B",th:"הכנסת ג'אב. סטפינג מטקות. שייק + טפיחה.",
-    s:[mk("Text-based intro","הקדמה לשיעור","","Text","gap","No Cat 1 video left"),mk("Diaphragmatic Breathing 5/5","נשימה סרעפתית 5/5","3.1","Cat 3",null,"Reuse — ground before Jab"),mk("Shake + Patting","שייק + טפיחה","4.5","Cat 4"),mk("Paddles — Ipsi Step Stationary","מטקות — איפסי במקום","5.15","Cat 5"),mk("Jab","ג'אב — אגרוף קדמי","7.4","Cat 7","blocker","File #59 NOT EDITED"),mk("Text-based integration","שילוב: ג'אב + מטקות + סטפינג","","Text","gap","Write text"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
-  {n:8,t:"עוצמה",te:"Power",p:"B",th:"קרוס. הצלפה סרעפתית. תנועה מתפרצת.",
-    s:[mk("Text-based intro","הקדמה לשיעור","","Text","gap","Write class intro"),mk("Diaphragmatic Slingshot","הצלפה סרעפתית","3.5","Cat 3","blocker","File #56 NOT EDITED"),mk("Shake + Stroke","שייק + הברשה","4.6","Cat 4"),mk("Paddles — Ipsi Step F/R/L","מטקות — איפסי קדימה/ימין/שמאל","5.16","Cat 5"),mk("Cross","קרוס — אגרוף אחורי","7.6","Cat 7","blocker","File #60 NOT EDITED"),mk("INTEGRATION: Slingshots+Shake","הצלפה + שייק — שילוב","6.3","Cat 6","blocker","File #57 NOT EDITED"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
-  {n:9,t:"תגובה",te:"Response",p:"C",th:"שלב אינטגרציה. קומבינציות. גלילי קצף.",
-    s:[mk("Text-based intro","הקדמה לשיעור","","Text","gap","Write class intro"),mk("Diaphragmatic Breathing 10/10","נשימה סרעפתית 10/10","3.2","Cat 3",null,"Reuse — deepen"),mk("Relaxation on Foam Rollers","הרפייה על גלילים","4.8","Cat 4",null,"Long video. Foam roller."),mk("Paddles — Contra Step Stationary","מטקות — קונטרה במקום","5.18","Cat 5"),mk("Combination 1: Kalachnikov","קומבינציה 1: קלצ'","7.10","Cat 7","blocker","File #62 NOT EDITED"),mk("INTEGRATION: Paddles+Jab+Cross","מטקות + צעידה + ג'אב + קרוס","7.8*","Cat 7",null,"Execution clip"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
-  {n:10,t:"שילוב",te:"Combination",p:"C",th:"קומבינציות מרובות. אימון כוח. איגרוף מלא.",
-    s:[mk("Text-based intro","הקדמה לשיעור","","Text","gap","Write class intro"),mk("Breathing Pause — Tension","עצירת נשימה — זיהוי מתח","3.3","Cat 3",null,"Reuse under load"),mk("Push Up Static Hold","החזקת שכיבות סמיכה","8.4","Cat 8","blocker","File #66 NOT EDITED"),mk("Paddles — Contra Step F/R/L","מטקות — קונטרה קדימה/ימין/שמאל","5.20","Cat 5"),mk("Combination 2: Mailman","קומבינציה 2: דוור","7.11","Cat 7","blocker","File #63 NOT EDITED"),mk("INTEGRATION: Paddles+Boxing+Breath","מטקות + צעידה + איגרוף + נשימה","7.9","Cat 7","blocker","File #61 NOT EDITED"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
-  {n:11,t:"חוסן",te:"Resilience",p:"C",th:"הגנות. אימון איזומטרי. אינטגרציה מתקדמת.",
-    s:[mk("Text-based intro","הקדמה לשיעור","","Text","gap","Write class intro"),mk("Breathing with Sound","נשימה עם צליל","3.4","Cat 3",null,"Reuse — vagal toning"),mk("Sit Up Static Hold","החזקת כפיפות בטן","8.5","Cat 8","blocker","File #67 NOT EDITED"),mk("Empty Arm Sagittal Circles","סיבובי יד ריקה — סגיטליים","5.14","Cat 5",null,"2 parts: #45+#46"),mk("Slipping — Ipsilateral","סליפינג — איפסילטרלי","7.14","Cat 7","blocker","File #72 NOT EDITED"),mk("INTEGRATION: All Defensive","כל מהלכי ההגנה","7.17","Cat 7","blocker","File #75 NOT EDITED"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
-  {n:12,t:"אינטגרציה מלאה",te:"Full Integration",p:"C",th:"כל הכלים ביחד. מורכבות מירבית. סגירת קורס.",
-    s:[mk("Text-based intro","הקדמה לשיעור","","Text","gap","Final class intro"),mk("Diaphragmatic Breathing 10/10","נשימה סרעפתית 10/10","3.2","Cat 3",null,"Reuse — full depth"),mk("Standing Rotational Shake","שייק סיבובי בעמידה","4.7","Cat 4",null,"Advanced tension release"),mk("Spinal Arching & Flexion","קימורים והקשתות בעמידה","8.1","Cat 8",null,"Spine mobility"),mk("Combination 3: Paradidle","קומבינציה 3: פרדידל","7.12","Cat 7","blocker","File #64 NOT EDITED"),mk("INTEGRATION: All Boxing+5/5","כל האיגרוף + נשימה 5/5","7.19","Cat 7","blocker","File #77 NOT EDITED"),mk("Reflection & Final Closure","רפלקציה וסגירה סופית","","Text",null,"Extended — course closure")]},
+  {n:1,t:"יסודות",te:"Foundations",p:"A",th:"מגע ראשון עם SBRT. כלי ויסות בסיסיים. ללא קרב.",s:[mk("What Is Somatic?","מהו סומטי?","1.9","Cat 1"),mk("Diaphragmatic Breathing 5/5","נשימה סרעפתית 5/5","3.1","Cat 3","blocker","File #3 NOT EDITED"),mk("Mind-Body Scan (Standing)","סריקת גוף בעמידה","2.2","Cat 2"),mk("Shake — Basic","שייק בסיסי","4.1","Cat 4","check","File #22 combined 4.1+4.3+4.9"),mk("SKIP","","","Skip",null,"No combat in Class 1"),mk("INTEGRATION: Shakes + Sigh","שייקים + אנחה פיזיולוגית","4.9","Cat 4","check","End of file #22"),mk("Reflection & Closure","רפלקציה וסגירה","","Text",null,"Text + homework")]},
+  {n:2,t:"מודעות",te:"Awareness",p:"A",th:"העמקת אוצר מילים תחושתי. שיום מצבים פנימיים.",s:[mk("Stress Response as a Wave","תגובת הסטרס כגל","1.4","Cat 1"),mk("Diaphragmatic Breathing 5/5","נשימה סרעפתית 5/5","3.1","Cat 3",null,"Reuse — deepen"),mk("Sensations Naming","שיום תחושות","2.1","Cat 2","blocker","File #10 NOT EDITED"),mk("Shake With Weight Transfer","שייק עם העברות משקל","4.2","Cat 4"),mk("SKIP","","","Skip",null,"No combat in Class 2"),mk("INTEGRATION: Scan + Breathing","סריקת גוף + נשימה 5/5","2.4","Cat 2","blocker","File #55 NOT EDITED"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
+  {n:3,t:"התבססות",te:"Grounding",p:"A",th:"עבודה מבנית ראשונה. עמידה קרבית + מטקות.",s:[mk("Using an Anchor","שימוש בעוגנים","1.10","Cat 1"),mk("Breathing Pause — Tension","עצירת נשימה — זיהוי מתח","3.3","Cat 3"),mk("Heavy Hand — Honey Pool","היד הכבדה — בריכת הדבש","9.1","Cat 9",null,"Audio-primary somatic"),mk("Combat Stance — Regular","עמידה קרבית — רגילה","5.2","Cat 5"),mk("Shoulder Paddles — Bi-Lateral","מטקות כתפיים — בילטראלית","5.8","Cat 5"),mk("INTEGRATION: Stance+Paddles+5/5","עמידה + מטקות + נשימה 5/5","5.13","Cat 5"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
+  {n:4,t:"שליטה",te:"Control",p:"A",th:"השהיית תגובה. התקדמות 10/10. סטפינג.",s:[mk("Response Delay Concept","עקרון השהיית התגובה","1.5","Cat 1"),mk("Diaphragmatic Breathing 10/10","נשימה סרעפתית 10/10","3.2","Cat 3",null,"Progression. 3 parts."),mk("Breath Tracking (Saika)","מעקב אחר הנשימה","2.3","Cat 2","check","File #49 needs trim"),mk("Combat Stance Stepping","סטפינג בעמידה קרבית","5.3","Cat 5"),mk("Paddles — Combat Stance","מטקות — בעמידה קרבית","5.11","Cat 5"),mk("INTEGRATION: Wrist + Breathing","תרגילי שורש כף היד + נשימה","8.3","Cat 8"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
+  {n:5,t:"הרחבה",te:"Expansion",p:"B",th:"ויסות משותף. נשימה עם צליל. הכנה לאיגרוף.",s:[mk("Expanding Our Processor","הרחבת המעבד שלנו","1.8","Cat 1"),mk("Breathing with Sound","נשימה עם צליל","3.4","Cat 3",null,"Vagus stimulation"),mk("The Secret Smile","החיוך הנסתר","9.2","Cat 9",null,"Audio-primary somatic"),mk("Paddles — Contra Entries","מטקות — כניסות קונטרה-לטרליות","5.9","Cat 5"),mk("Punching Prep — Fist/Gloves","הכנה לאיגרוף — סגירת אגרוף","7.3","Cat 7"),mk("Text-based integration","שילוב: צליל + מטקות + הכנה","","Text","gap","No INTEGRATION video"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
+  {n:6,t:"מבנה ותנועה",te:"Structure & Motion",p:"B",th:"מדוע הטכנולוגיה. מכניקת איגרוף. מטקות איפסילטרליות.",s:[mk("Why This Technology?","מדוע הטכנולוגיה הזו?","5.7","Cat 5",null,"Educational — methodology"),mk("Breathing Pause","עצירת נשימה","3.6","Cat 3","check","Order uncertain"),mk("Multidirectional Shake","שייק לכמה כיוונים","4.4","Cat 4",null,"Follow-along"),mk("Paddles — Ipsi Entries","מטקות — כניסות איפסי-לטרליות","5.10","Cat 5"),mk("Boxing Mechanics — Whip","מכניקת איגרוף — שוט","7.1","Cat 7",null,"First boxing"),mk("Text-based integration","שילוב: מטקות + שוט + נשימה","","Text","gap","No INTEGRATION video"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
+  {n:7,t:"קואורדינציה",te:"Coordination",p:"B",th:"הכנסת ג'אב. סטפינג מטקות. שייק + טפיחה.",s:[mk("Text-based intro","הקדמה לשיעור","","Text","gap","No Cat 1 video left"),mk("Diaphragmatic Breathing 5/5","נשימה סרעפתית 5/5","3.1","Cat 3",null,"Reuse — ground before Jab"),mk("Shake + Patting","שייק + טפיחה","4.5","Cat 4"),mk("Paddles — Ipsi Step Stationary","מטקות — איפסי במקום","5.15","Cat 5"),mk("Jab","ג'אב — אגרוף קדמי","7.4","Cat 7","blocker","File #59 NOT EDITED"),mk("Text-based integration","שילוב: ג'אב + מטקות + סטפינג","","Text","gap","Write text"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
+  {n:8,t:"עוצמה",te:"Power",p:"B",th:"קרוס. הצלפה סרעפתית. תנועה מתפרצת.",s:[mk("Text-based intro","הקדמה לשיעור","","Text","gap","Write class intro"),mk("Diaphragmatic Slingshot","הצלפה סרעפתית","3.5","Cat 3","blocker","File #56 NOT EDITED"),mk("Shake + Stroke","שייק + הברשה","4.6","Cat 4"),mk("Paddles — Ipsi Step F/R/L","מטקות — איפסי קדימה/ימין/שמאל","5.16","Cat 5"),mk("Cross","קרוס — אגרוף אחורי","7.6","Cat 7","blocker","File #60 NOT EDITED"),mk("INTEGRATION: Slingshots+Shake","הצלפה + שייק — שילוב","6.3","Cat 6","blocker","File #57 NOT EDITED"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
+  {n:9,t:"תגובה",te:"Response",p:"C",th:"שלב אינטגרציה. קומבינציות. גלילי קצף.",s:[mk("Text-based intro","הקדמה לשיעור","","Text","gap","Write class intro"),mk("Diaphragmatic Breathing 10/10","נשימה סרעפתית 10/10","3.2","Cat 3",null,"Reuse — deepen"),mk("Relaxation on Foam Rollers","הרפייה על גלילים","4.8","Cat 4",null,"Long video. Foam roller."),mk("Paddles — Contra Step Stationary","מטקות — קונטרה במקום","5.18","Cat 5"),mk("Combination 1: Kalachnikov","קומבינציה 1: קלצ'","7.10","Cat 7","blocker","File #62 NOT EDITED"),mk("INTEGRATION: Paddles+Jab+Cross","מטקות + צעידה + ג'אב + קרוס","7.8*","Cat 7",null,"Execution clip"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
+  {n:10,t:"שילוב",te:"Combination",p:"C",th:"קומבינציות מרובות. אימון כוח. איגרוף מלא.",s:[mk("Text-based intro","הקדמה לשיעור","","Text","gap","Write class intro"),mk("Breathing Pause — Tension","עצירת נשימה — זיהוי מתח","3.3","Cat 3",null,"Reuse under load"),mk("Push Up Static Hold","החזקת שכיבות סמיכה","8.4","Cat 8","blocker","File #66 NOT EDITED"),mk("Paddles — Contra Step F/R/L","מטקות — קונטרה קדימה/ימין/שמאל","5.20","Cat 5"),mk("Combination 2: Mailman","קומבינציה 2: דוור","7.11","Cat 7","blocker","File #63 NOT EDITED"),mk("INTEGRATION: Paddles+Boxing+Breath","מטקות + צעידה + איגרוף + נשימה","7.9","Cat 7","blocker","File #61 NOT EDITED"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
+  {n:11,t:"חוסן",te:"Resilience",p:"C",th:"הגנות. אימון איזומטרי. אינטגרציה מתקדמת.",s:[mk("Text-based intro","הקדמה לשיעור","","Text","gap","Write class intro"),mk("Breathing with Sound","נשימה עם צליל","3.4","Cat 3",null,"Reuse — vagal toning"),mk("Sit Up Static Hold","החזקת כפיפות בטן","8.5","Cat 8","blocker","File #67 NOT EDITED"),mk("Empty Arm Sagittal Circles","סיבובי יד ריקה — סגיטליים","5.14","Cat 5",null,"2 parts: #45+#46"),mk("Slipping — Ipsilateral","סליפינג — איפסילטרלי","7.14","Cat 7","blocker","File #72 NOT EDITED"),mk("INTEGRATION: All Defensive","כל מהלכי ההגנה","7.17","Cat 7","blocker","File #75 NOT EDITED"),mk("Reflection & Closure","רפלקציה וסגירה","","Text")]},
+  {n:12,t:"אינטגרציה מלאה",te:"Full Integration",p:"C",th:"כל הכלים ביחד. מורכבות מירבית. סגירת קורס.",s:[mk("Text-based intro","הקדמה לשיעור","","Text","gap","Final class intro"),mk("Diaphragmatic Breathing 10/10","נשימה סרעפתית 10/10","3.2","Cat 3",null,"Reuse — full depth"),mk("Standing Rotational Shake","שייק סיבובי בעמידה","4.7","Cat 4",null,"Advanced tension release"),mk("Spinal Arching & Flexion","קימורים והקשתות בעמידה","8.1","Cat 8",null,"Spine mobility"),mk("Combination 3: Paradidle","קומבינציה 3: פרדידל","7.12","Cat 7","blocker","File #64 NOT EDITED"),mk("INTEGRATION: All Boxing+5/5","כל האיגרוף + נשימה 5/5","7.19","Cat 7","blocker","File #77 NOT EDITED"),mk("Reflection & Final Closure","רפלקציה וסגירה סופית","","Text",null,"Extended — course closure")]},
 ];
-
 const IU = [
-  mk("Heavy Legs — Weight Dist.","רגליים כבדות — מיפוי סומטי","5.1","Cat 5","decision","Audio-primary. ALT body-awareness."),
-  mk("Combat Stance Half Steps","חצאי צעדים בעמידה קרבית","5.4","Cat 5","decision","'Not sure if good for course'"),
-  mk("Combat Stance Step+Move","???","5.5","Cat 5","decision","'Not sure if filmed'"),
-  mk("Paddles Combat (Exec)","","5.12*","Cat 5",null,"Execution clip — bonus Ch.3–4"),
-  mk("Paddles Ipsi (Exec)","","5.17*","Cat 5",null,"Execution clip — bonus Ch.6–7"),
-  mk("Paddles Contra (Exec)","","5.19*","Cat 5",null,"Execution clip — bonus Ch.8–9"),
-  mk("Flick & Skin Touch + PARTNER","פליק ומגע קל","7.2","Cat 7","decision","Pairs with 7.1. Could add to Ch.6."),
-  mk("Jab — Execution Only","ג'אב — ביצוע בלבד","7.5*","Cat 7",null,"Bonus follow-along Ch.7"),
-  mk("Cross — Execution Only","קרוס — ביצוע בלבד","7.7*","Cat 7",null,"Bonus Ch.8"),
-  mk("Slipping — Contralateral","סליפינג — קונטרלטרלי","7.15","Cat 7","decision","Extend Ch.11 or Ch.12"),
-  mk("Weaving","וויבינג (התכופפות)","7.16","Cat 7","decision","Extend Ch.11 or Ch.12"),
-  mk("INTEGRATION: All Combos Shadow","3 קומבינציות הידיים","7.13","Cat 7","decision","ALT integration Ch.10–11"),
-  mk("INTEGRATION: All Boxing Options","כל אפשרויות האיגרוף","7.18","Cat 7","decision","ALT finale Ch.12"),
-  mk("Wrist Exercises (standalone)","תרגילי שורש כף היד","8.2","Cat 8",null,"8.3 used in Ch.4 instead"),
-  mk("INTEGRATION: Push Ups+5/5","שכיבות סמיכה + נשימה 5/5","8.7","Cat 8","decision","Bonus Ch.10+"),
-  mk("INTEGRATION: Sit Ups+5/5","כפיפות בטן + נשימה 5/5","8.8","Cat 8","decision","Bonus Ch.11+"),
-  mk("INTEGRATION: Squats+5/5","סקוואטים + נשימה 5/5","8.9","Cat 8","decision","Bonus Ch.12"),
-  mk("Paddle Step + Slingshots","מטקות כתפיים + הצלפה","6.4","Cat 6","decision","2nd explosive. Ch.9–12."),
-  mk("Squat Static Hold","החזקת סקוואט","8.6","Cat 8","decision","Swap into Ch.12"),
+  mk("Heavy Legs — Weight Dist.","רגליים כבדות — מיפוי סומטי","5.1","Cat 5","decision","Audio-primary. ALT body-awareness."),mk("Combat Stance Half Steps","חצאי צעדים בעמידה קרבית","5.4","Cat 5","decision","Not sure if good for course"),mk("Combat Stance Step+Move","???","5.5","Cat 5","decision","Not sure if filmed"),mk("Paddles Combat (Exec)","","5.12*","Cat 5",null,"Execution clip — bonus Ch.3-4"),mk("Paddles Ipsi (Exec)","","5.17*","Cat 5",null,"Execution clip — bonus Ch.6-7"),mk("Paddles Contra (Exec)","","5.19*","Cat 5",null,"Execution clip — bonus Ch.8-9"),mk("Flick & Skin Touch + PARTNER","פליק ומגע קל","7.2","Cat 7","decision","Pairs with 7.1. Could add to Ch.6."),mk("Jab — Execution Only","ג'אב — ביצוע בלבד","7.5*","Cat 7",null,"Bonus follow-along Ch.7"),mk("Cross — Execution Only","קרוס — ביצוע בלבד","7.7*","Cat 7",null,"Bonus Ch.8"),mk("Slipping — Contralateral","סליפינג — קונטרלטרלי","7.15","Cat 7","decision","Extend Ch.11 or Ch.12"),mk("Weaving","וויבינג (התכופפות)","7.16","Cat 7","decision","Extend Ch.11 or Ch.12"),mk("INTEGRATION: All Combos Shadow","3 קומבינציות הידיים","7.13","Cat 7","decision","ALT integration Ch.10-11"),mk("INTEGRATION: All Boxing Options","כל אפשרויות האיגרוף","7.18","Cat 7","decision","ALT finale Ch.12"),mk("Wrist Exercises (standalone)","תרגילי שורש כף היד","8.2","Cat 8",null,"8.3 used in Ch.4 instead"),mk("INTEGRATION: Push Ups+5/5","שכיבות סמיכה + נשימה 5/5","8.7","Cat 8","decision","Bonus Ch.10+"),mk("INTEGRATION: Sit Ups+5/5","כפיפות בטן + נשימה 5/5","8.8","Cat 8","decision","Bonus Ch.11+"),mk("INTEGRATION: Squats+5/5","סקוואטים + נשימה 5/5","8.9","Cat 8","decision","Bonus Ch.12"),mk("Paddle Step + Slingshots","מטקות כתפיים + הצלפה","6.4","Cat 6","decision","2nd explosive. Ch.9-12."),mk("Squat Static Hold","החזקת סקוואט","8.6","Cat 8","decision","Swap into Ch.12"),
 ];
 
 function App() {
@@ -119,368 +93,202 @@ function App() {
   const [hist, setHist] = useState([]);
   const [fut, setFut] = useState([]);
   const [dropTarget, setDropTarget] = useState(null);
+  const [inlineEdit, setInlineEdit] = useState(null);
+  const [filt, setFilt] = useState("all");
+  const [coll, setColl] = useState({});
   const [editing, setEditing] = useState(null);
   const [ev, setEv] = useState({});
   const [adding, setAdding] = useState(null);
   const [nv, setNv] = useState({});
-  const [filt, setFilt] = useState("all");
-  const [coll, setColl] = useState({});
+  const histSnap = useRef(false);
 
-  /* ── History ── */
-  const pushHist = (c,p) => {
-    setHist(h=>[...h.slice(-40),{c:clone(c),p:clone(p)}]);
-    setFut([]);
+  const pushH = (c,p) => {setHist(h=>[...h.slice(-40),{c:clone(c),p:clone(p)}]);setFut([]);};
+  const undo = useCallback(()=>{if(!hist.length)return;const prev=hist[hist.length-1];setFut(f=>[...f,{c:clone(cls),p:clone(pool)}]);setCls(prev.c);setPool(prev.p);setHist(h=>h.slice(0,-1));},[hist,cls,pool]);
+  const redo = useCallback(()=>{if(!fut.length)return;const next=fut[fut.length-1];setHist(h=>[...h,{c:clone(cls),p:clone(pool)}]);setCls(next.c);setPool(next.p);setFut(f=>f.slice(0,-1));},[fut,cls,pool]);
+  const reset = ()=>{pushH(cls,pool);setCls(clone(IC));setPool(clone(IU));};
+  useEffect(()=>{const h=e=>{if((e.ctrlKey||e.metaKey)&&e.key==="z"&&!e.shiftKey){e.preventDefault();undo();}if((e.ctrlKey||e.metaKey)&&(e.key==="y"||(e.key==="z"&&e.shiftKey))){e.preventDefault();redo();}};window.addEventListener("keydown",h);return()=>window.removeEventListener("keydown",h);},[undo,redo]);
+
+  // Inline edit
+  const setField = (a,ci,si,field,val) => {
+    if(a==="c"){const nc=clone(cls);nc[ci].s[si][field]=val;setCls(nc);}
+    else{const np=clone(pool);np[si][field]=val;setPool(np);}
   };
-  const undo = useCallback(()=>{
-    if(!hist.length)return;
-    const prev=hist[hist.length-1];
-    setFut(f=>[...f,{c:clone(cls),p:clone(pool)}]);
-    setCls(prev.c);setPool(prev.p);
-    setHist(h=>h.slice(0,-1));
-  },[hist,cls,pool]);
-  const redo = useCallback(()=>{
-    if(!fut.length)return;
-    const next=fut[fut.length-1];
-    setHist(h=>[...h,{c:clone(cls),p:clone(pool)}]);
-    setCls(next.c);setPool(next.p);
-    setFut(f=>f.slice(0,-1));
-  },[fut,cls,pool]);
-  const reset = ()=>{pushHist(cls,pool);setCls(clone(IC));setPool(clone(IU));};
+  const startInline = (a,ci,si,field) => {
+    if(!histSnap.current){pushH(cls,pool);histSnap.current=true;}
+    setInlineEdit({a,ci,si,field});
+  };
+  const commitInline = () => {setInlineEdit(null);histSnap.current=false;};
 
-  useEffect(()=>{
-    const h=e=>{
-      if((e.ctrlKey||e.metaKey)&&e.key==="z"&&!e.shiftKey){e.preventDefault();undo();}
-      if((e.ctrlKey||e.metaKey)&&(e.key==="y"||(e.key==="z"&&e.shiftKey))){e.preventDefault();redo();}
-    };
-    window.addEventListener("keydown",h);return()=>window.removeEventListener("keydown",h);
-  },[undo,redo]);
-
-  /* ── Drag handlers — source stored on window to survive re-renders ── */
-  const handleDragStart = (e, loc) => {
-    window.__drag = loc;
-    e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData("text/plain", JSON.stringify(loc));
-    // Make ghost slightly transparent
-    if(e.target) e.target.style.opacity = "0.4";
+  // Drag
+  const handleDragStart = (e,loc) => {if(inlineEdit){e.preventDefault();return;}window.__drag=loc;e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",JSON.stringify(loc));if(e.target)e.target.style.opacity="0.4";};
+  const handleDragEnd = (e) => {window.__drag=null;setDropTarget(null);if(e.target)e.target.style.opacity="1";};
+  const handleDragOver = (e,loc) => {e.preventDefault();e.dataTransfer.dropEffect="move";setDropTarget(prev=>{if(prev&&prev.a===loc.a&&prev.ci===loc.ci&&prev.si===loc.si)return prev;return loc;});};
+  const handleDragLeave = (e) => {const r=e.currentTarget.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)setDropTarget(null);};
+  const handleDrop = (e,target) => {
+    e.preventDefault();e.stopPropagation();setDropTarget(null);
+    let src=window.__drag;if(!src){try{src=JSON.parse(e.dataTransfer.getData("text/plain"));}catch(x){return;}}if(!src)return;window.__drag=null;
+    if(src.a===target.a&&src.ci===target.ci&&src.si===target.si)return;
+    pushH(cls,pool);const nc=clone(cls),np=clone(pool);
+    let item;if(src.a==="c")item=nc[src.ci].s[src.si];else item=np[src.si];
+    if(target.a==="c"){const ex=nc[target.ci].s[target.si];if(src.a==="c"){nc[target.ci].s[target.si]=item;nc[src.ci].s[src.si]=ex;}else{nc[target.ci].s[target.si]=item;np[src.si]=ex;}}
+    else{if(src.a==="c"){np.push(item);nc[src.ci].s[src.si]=mk("(empty)");}else{const[r]=np.splice(src.si,1);np.splice(target.si,0,r);}}
+    setCls(nc);setPool(np);
   };
 
-  const handleDragEnd = (e) => {
-    window.__drag = null;
-    setDropTarget(null);
-    if(e.target) e.target.style.opacity = "1";
-  };
-
-  const handleDragOver = (e, loc) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-    // Only update state if target changed (avoid constant re-renders)
-    setDropTarget(prev => {
-      if(prev && prev.a===loc.a && prev.ci===loc.ci && prev.si===loc.si) return prev;
-      return loc;
-    });
-  };
-
-  const handleDragLeave = (e) => {
-    // Only clear if we truly left (not entering a child)
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX, y = e.clientY;
-    if(x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
-      setDropTarget(null);
-    }
-  };
-
-  const handleDrop = (e, target) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDropTarget(null);
-
-    // Read source from window global
-    let src = window.__drag;
-    if(!src) {
-      try { src = JSON.parse(e.dataTransfer.getData("text/plain")); } catch(x) { return; }
-    }
-    if(!src) return;
-    window.__drag = null;
-
-    // Same spot — no-op
-    if(src.a===target.a && src.ci===target.ci && src.si===target.si) return;
-
-    // Save history BEFORE mutating
-    pushHist(cls, pool);
-
-    const nc = clone(cls);
-    const np = clone(pool);
-
-    // Get the dragged item
-    let item;
-    if(src.a === "c") item = nc[src.ci].s[src.si];
-    else item = np[src.si];
-
-    if(target.a === "c") {
-      // Dropping onto a class slot — swap
-      const existing = nc[target.ci].s[target.si];
-      if(src.a === "c") {
-        nc[target.ci].s[target.si] = item;
-        nc[src.ci].s[src.si] = existing;
-      } else {
-        nc[target.ci].s[target.si] = item;
-        np[src.si] = existing;
-      }
-    } else {
-      // Dropping onto unassigned pool
-      if(src.a === "c") {
-        np.push(item);
-        nc[src.ci].s[src.si] = mk("(empty)","","","Skip");
-      } else {
-        const [r] = np.splice(src.si, 1);
-        np.splice(target.si, 0, r);
-      }
-    }
-
-    setCls(nc);
-    setPool(np);
-  };
-
-  /* ── Actions ── */
-  const del = (a,ci,si) => {
-    pushHist(cls,pool);
-    if(a==="c"){
-      const nc=clone(cls);const r=nc[ci].s[si];
-      nc[ci].s[si]=mk("(empty)","","","Skip");setCls(nc);
-      if(r.name!=="(empty)"&&r.cat!=="Skip") setPool(p=>[...p,r]);
-    } else {
-      const np=clone(pool);np.splice(si,1);setPool(np);
-    }
-  };
-  const startEdit = (a,ci,si) => {
-    const it = a==="c" ? cls[ci].s[si] : pool[si];
-    setEditing({a,ci,si});
-    setEv({name:it.name, heb:it.heb, vid:it.vid, cat:it.cat, fn:it.fn||""});
-  };
-  const saveEdit = () => {
-    if(!editing) return;
-    pushHist(cls,pool);
-    const {a,ci,si} = editing;
-    if(a==="c"){const nc=clone(cls);Object.assign(nc[ci].s[si],ev);setCls(nc);}
-    else{const np=clone(pool);Object.assign(np[si],ev);setPool(np);}
-    setEditing(null);
-  };
-  const openAdd = (ci,si) => {setAdding({ci,si});setNv({name:"",heb:"",vid:"",cat:"Cat 1",fl:null,fn:""});};
-  const doAdd = () => {
-    if(!adding) return;
-    pushHist(cls,pool);
-    const nc=clone(cls);nc[adding.ci].s[adding.si]={...nv,id:uid()};setCls(nc);setAdding(null);
-  };
+  const del = (a,ci,si) => {pushH(cls,pool);if(a==="c"){const nc=clone(cls);const r=nc[ci].s[si];nc[ci].s[si]=mk("(empty)");setCls(nc);if(r.name!=="(empty)"&&r.cat!=="Skip")setPool(p=>[...p,r]);}else{const np=clone(pool);np.splice(si,1);setPool(np);}};
+  const openFull = (a,ci,si) => {const it=a==="c"?cls[ci].s[si]:pool[si];setEditing({a,ci,si});setEv({name:it.name,heb:it.heb,vid:it.vid,cat:it.cat,fn:it.fn||"",txt:it.txt||""});};
+  const saveFull = () => {if(!editing)return;pushH(cls,pool);const{a,ci,si}=editing;if(a==="c"){const nc=clone(cls);Object.assign(nc[ci].s[si],ev);setCls(nc);}else{const np=clone(pool);Object.assign(np[si],ev);setPool(np);}setEditing(null);};
+  const openAdd = (ci,si) => {setAdding({ci,si});setNv({name:"",heb:"",vid:"",cat:"Cat 1",fl:null,fn:"",txt:""});};
+  const doAdd = () => {if(!adding)return;pushH(cls,pool);const nc=clone(cls);nc[adding.ci].s[adding.si]={...nv,id:uid()};setCls(nc);setAdding(null);};
 
   const flg = f => f==="blocker"?{bg:"#FEE2E2",i:"⛔",t:"BLOCKER"}:f==="check"?{bg:"#FEF3C7",i:"⚠️",t:"CHECK"}:f==="gap"?{bg:"#DBEAFE",i:"📋",t:"GAP"}:f==="decision"?{bg:"#F3E8FF",i:"🤔",t:"DECIDE"}:null;
-  const stats = {
-    total:cls.reduce((a,c)=>a+c.s.filter(s=>s.cat!=="Skip"&&s.name!=="(empty)").length,0),
-    bl:cls.reduce((a,c)=>a+c.s.filter(s=>s.fl==="blocker").length,0),
-    gap:cls.reduce((a,c)=>a+c.s.filter(s=>s.fl==="gap").length,0),
-    ch:cls.reduce((a,c)=>a+c.s.filter(s=>s.fl==="check").length,0),
+  const stats = {total:cls.reduce((a,c)=>a+c.s.filter(s=>s.cat!=="Skip"&&s.name!=="(empty)").length,0),bl:cls.reduce((a,c)=>a+c.s.filter(s=>s.fl==="blocker").length,0),gap:cls.reduce((a,c)=>a+c.s.filter(s=>s.fl==="gap").length,0),ch:cls.reduce((a,c)=>a+c.s.filter(s=>s.fl==="check").length,0)};
+  const isOver = (a,ci,si) => dropTarget&&dropTarget.a===a&&dropTarget.ci===ci&&dropTarget.si===si;
+
+  /* Inline editable field */
+  const Inline = ({a,ci,si,field,value,sty,multi}) => {
+    const active = inlineEdit&&inlineEdit.a===a&&inlineEdit.ci===ci&&inlineEdit.si===si&&inlineEdit.field===field;
+    const ref = useRef(null);
+    useEffect(()=>{if(active&&ref.current){ref.current.focus();const len=(ref.current.value||"").length;try{ref.current.setSelectionRange(len,len);}catch(e){}};},[active]);
+    if(active){
+      const bs={...sty,background:"#fff",border:"1px solid #93C5FD",borderRadius:3,padding:"1px 3px",outline:"none",width:"100%",resize:"none",direction:"rtl",fontFamily:"inherit"};
+      const kd = e=>{if(e.key==="Enter"&&!e.shiftKey&&!multi){e.preventDefault();commitInline();}if(e.key==="Escape")commitInline();e.stopPropagation();};
+      const ch = e=>setField(a,ci,si,field,e.target.value);
+      if(multi) return <textarea ref={ref} value={value||""} onChange={ch} onBlur={commitInline} onKeyDown={kd} rows={2} style={{...bs,fontSize:8.5,lineHeight:1.3,minHeight:24}} onClick={e=>e.stopPropagation()}/>;
+      return <input ref={ref} value={value||""} onChange={ch} onBlur={commitInline} onKeyDown={kd} style={bs} onClick={e=>e.stopPropagation()}/>;
+    }
+    const dbl = e=>{e.stopPropagation();e.preventDefault();startInline(a,ci,si,field);};
+    const hov = {onMouseEnter:e=>{e.currentTarget.style.background="rgba(0,0,0,.04)"},onMouseLeave:e=>{e.currentTarget.style.background="transparent"}};
+    if(multi) return <div onDoubleClick={dbl} {...hov} style={{...sty,cursor:"text",minHeight:14,borderRadius:2,padding:"0 2px"}}>{value||<span style={{color:"#C0C0C0",fontStyle:"italic",fontSize:7.5}}>+ טקסט...</span>}</div>;
+    return <div onDoubleClick={dbl} {...hov} style={{...sty,cursor:"text",borderRadius:2,padding:"0 2px"}}>{value||<span style={{color:"#C0C0C0",fontStyle:"italic",fontSize:7.5}}>—</span>}</div>;
   };
 
-  const isDropping = (a,ci,si) => dropTarget && dropTarget.a===a && dropTarget.ci===ci && dropTarget.si===si;
-
-  /* ── Block component ── */
-  const Block = ({it, a, ci, si}) => {
-    const cat = CAT[it.cat] || CAT.Skip;
-    const fi = flg(it.fl);
-    const dropping = isDropping(a,ci,si);
-
-    // Empty slot
-    if(it.name==="(empty)" || (!it.name && !it.vid)) return (
-      <div
-        onDragOver={e => handleDragOver(e, {a,ci,si})}
-        onDragLeave={handleDragLeave}
-        onDrop={e => handleDrop(e, {a,ci,si})}
-        onClick={() => a==="c" && openAdd(ci,si)}
-        style={{
-          border: `2px dashed ${dropping ? "#3B82F6" : "#D1D5DB"}`,
-          background: dropping ? "#EFF6FF" : "#FAFAFA",
-          borderRadius: 6, padding: 6, height: 56,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          cursor: "pointer", transition: "border-color .1s, background .1s"
-        }}
-      >
-        <span style={{color:"#9CA3AF",fontSize:10}}>+ הוסף</span>
-      </div>
-    );
-
-    return (
-      <div
-        draggable="true"
-        onDragStart={e => handleDragStart(e, {a,ci,si})}
-        onDragEnd={handleDragEnd}
-        onDragOver={e => handleDragOver(e, {a,ci,si})}
-        onDragLeave={handleDragLeave}
-        onDrop={e => handleDrop(e, {a,ci,si})}
-        onDoubleClick={() => startEdit(a,ci,si)}
-        style={{
-          background: cat.bg,
-          border: `1.5px solid ${dropping ? "#3B82F6" : cat.bd}`,
-          borderRadius: 6, padding: "5px 7px",
-          cursor: "grab", position: "relative",
-          transition: "border-color .1s",
-          minHeight: 56,
-          boxShadow: dropping ? "0 0 0 2px #3B82F6" : "0 1px 2px rgba(0,0,0,.04)",
-        }}
-      >
+  /* Block */
+  const Block = ({it,a,ci,si}) => {
+    const cat=CAT[it.cat]||CAT.Skip;const fi=flg(it.fl);const drop=isOver(a,ci,si);
+    const anyEdit=inlineEdit&&inlineEdit.a===a&&inlineEdit.ci===ci&&inlineEdit.si===si;
+    if(it.name==="(empty)"||(!it.name&&!it.vid&&!it.heb))return(
+      <div onDragOver={e=>handleDragOver(e,{a,ci,si})} onDragLeave={handleDragLeave} onDrop={e=>handleDrop(e,{a,ci,si})} onClick={()=>a==="c"&&openAdd(ci,si)}
+        style={{border:`2px dashed ${drop?"#3B82F6":"#D1D5DB"}`,background:drop?"#EFF6FF":"#FAFAFA",borderRadius:6,padding:6,height:56,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+        <span style={{color:"#9CA3AF",fontSize:10}}>+ הוסף</span></div>);
+    return(
+      <div draggable={!anyEdit?"true":"false"} onDragStart={e=>handleDragStart(e,{a,ci,si})} onDragEnd={handleDragEnd} onDragOver={e=>handleDragOver(e,{a,ci,si})} onDragLeave={handleDragLeave} onDrop={e=>handleDrop(e,{a,ci,si})} onContextMenu={e=>{e.preventDefault();openFull(a,ci,si);}}
+        style={{background:cat.bg,border:`1.5px solid ${drop?"#3B82F6":cat.bd}`,borderRadius:6,padding:"4px 6px",cursor:anyEdit?"default":"grab",position:"relative",minHeight:56,boxShadow:drop?"0 0 0 2px #3B82F6":"0 1px 2px rgba(0,0,0,.04)"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:2}}>
           <div style={{flex:1,minWidth:0}}>
             <div style={{display:"flex",alignItems:"center",gap:3,flexWrap:"wrap",marginBottom:1}}>
-              {it.vid && <span className="mono" style={{display:"inline-block",background:cat.c,color:"#fff",fontSize:8.5,fontWeight:600,padding:"0 4px",borderRadius:3,letterSpacing:.3}}>{it.vid}</span>}
-              {it.cat!=="Skip" && it.cat!=="Text" && <span style={{display:"inline-block",background:"rgba(0,0,0,.05)",color:cat.c,fontSize:7.5,fontWeight:700,padding:"0 4px",borderRadius:3}}>{cat.l}</span>}
+              {it.vid&&<span className="mono" style={{display:"inline-block",background:cat.c,color:"#fff",fontSize:8,fontWeight:600,padding:"0 4px",borderRadius:3,letterSpacing:.3}}>{it.vid}</span>}
+              {it.cat!=="Skip"&&it.cat!=="Text"&&<span style={{display:"inline-block",background:"rgba(0,0,0,.05)",color:cat.c,fontSize:7,fontWeight:700,padding:"0 4px",borderRadius:3}}>{cat.l}</span>}
             </div>
-            {it.heb && <div className="heb" style={{fontSize:12,fontWeight:800,color:"#111827",lineHeight:1.2,marginTop:1}}>{it.heb}</div>}
-            <div style={{fontSize:9.5,color:"#6B7280",lineHeight:1.15,marginTop:1}}>{it.name}</div>
+            <Inline a={a} ci={ci} si={si} field="heb" value={it.heb} sty={{fontSize:11.5,fontWeight:800,color:"#111827",lineHeight:1.2,direction:"rtl",textAlign:"right"}}/>
+            <Inline a={a} ci={ci} si={si} field="name" value={it.name} sty={{fontSize:9,color:"#6B7280",lineHeight:1.15,marginTop:1}}/>
+            <Inline a={a} ci={ci} si={si} field="txt" value={it.txt} multi sty={{fontSize:8.5,color:"#475569",lineHeight:1.25,marginTop:2,direction:"rtl",textAlign:"right",whiteSpace:"pre-wrap",wordBreak:"break-word"}}/>
           </div>
-          <button
-            onClick={e => {e.stopPropagation(); e.preventDefault(); del(a,ci,si);}}
-            onMouseDown={e => e.stopPropagation()}
-            style={{background:"none",border:"none",cursor:"pointer",color:"#9CA3AF",fontSize:12,padding:"0 1px",lineHeight:1,flexShrink:0}}
-            title="Remove"
-          >×</button>
+          <button onClick={e=>{e.stopPropagation();e.preventDefault();del(a,ci,si);}} onMouseDown={e=>e.stopPropagation()}
+            style={{background:"none",border:"none",cursor:"pointer",color:"#9CA3AF",fontSize:11,padding:"0 1px",lineHeight:1,flexShrink:0}}>×</button>
         </div>
-        {fi && <div style={{marginTop:2,display:"flex",alignItems:"center",gap:2,background:fi.bg,borderRadius:3,padding:"1px 4px"}}>
-          <span style={{fontSize:8}}>{fi.i}</span>
-          <span style={{fontSize:7.5,fontWeight:700,color:"#92400E",letterSpacing:.3}}>{fi.t}</span>
-          {it.fn && <span style={{fontSize:7.5,color:"#78716C",marginLeft:2}}>{it.fn}</span>}
-        </div>}
-      </div>
-    );
+        {fi&&<div style={{marginTop:2,display:"flex",alignItems:"center",gap:2,background:fi.bg,borderRadius:3,padding:"1px 4px"}}>
+          <span style={{fontSize:7}}>{fi.i}</span><span style={{fontSize:7,fontWeight:700,color:"#92400E",letterSpacing:.3}}>{fi.t}</span>
+          {it.fn&&<span style={{fontSize:7,color:"#78716C",marginLeft:2}}>{it.fn}</span>}</div>}
+      </div>);
   };
 
-  const fc = filt==="all" ? cls : cls.filter(c=>c.p===filt);
-
-  return (
+  const fc=filt==="all"?cls:cls.filter(c=>c.p===filt);
+  return(
     <div style={{minHeight:"100vh"}}>
       {/* TOOLBAR */}
-      <div style={{position:"sticky",top:0,zIndex:50,background:"#0F172A",color:"#fff",padding:"7px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:5,boxShadow:"0 4px 12px rgba(0,0,0,.15)"}}>
+      <div className="no-print" style={{position:"sticky",top:0,zIndex:50,background:"#0F172A",color:"#fff",padding:"7px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:5,boxShadow:"0 4px 12px rgba(0,0,0,.15)"}}>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
           <span style={{fontWeight:800,fontSize:14,letterSpacing:-.5}}>איתן ברוח</span>
           <span style={{fontSize:10,color:"#94A3B8"}}>מיפוי תרגילים — 12 שיעורים × 7 משבצות</span>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:4,flexWrap:"wrap"}}>
           <div style={{display:"flex",gap:2,marginRight:4}}>
-            {["all","A","B","C"].map(f=><button key={f} onClick={()=>setFilt(f)} style={{padding:"2px 8px",fontSize:10,fontWeight:700,borderRadius:3,border:"none",cursor:"pointer",background:filt===f?"#3B82F6":"#334155",color:filt===f?"#fff":"#94A3B8",transition:"all .12s"}}>{f==="all"?"הכל":`חלק ${f}`}</button>)}
+            {["all","A","B","C"].map(f=><button key={f} onClick={()=>setFilt(f)} style={{padding:"2px 8px",fontSize:10,fontWeight:700,borderRadius:3,border:"none",cursor:"pointer",background:filt===f?"#3B82F6":"#334155",color:filt===f?"#fff":"#94A3B8"}}>{f==="all"?"הכל":`חלק ${f}`}</button>)}
           </div>
-          <button onClick={undo} disabled={!hist.length} style={{padding:"3px 8px",fontSize:10,fontWeight:600,borderRadius:4,border:"1px solid #475569",background:"#1E293B",color:hist.length?"#E2E8F0":"#475569",cursor:hist.length?"pointer":"default"}}>↶ Undo</button>
-          <button onClick={redo} disabled={!fut.length} style={{padding:"3px 8px",fontSize:10,fontWeight:600,borderRadius:4,border:"1px solid #475569",background:"#1E293B",color:fut.length?"#E2E8F0":"#475569",cursor:fut.length?"pointer":"default"}}>↷ Redo</button>
-          <button onClick={reset} style={{padding:"3px 8px",fontSize:10,fontWeight:600,borderRadius:4,border:"1px solid #DC2626",background:"#1E293B",color:"#FCA5A5",cursor:"pointer"}}>⟳ Reset</button>
+          <button onClick={undo} disabled={!hist.length} style={{padding:"3px 8px",fontSize:10,fontWeight:600,borderRadius:4,border:"1px solid #475569",background:"#1E293B",color:hist.length?"#E2E8F0":"#475569",cursor:hist.length?"pointer":"default"}}>↶</button>
+          <button onClick={redo} disabled={!fut.length} style={{padding:"3px 8px",fontSize:10,fontWeight:600,borderRadius:4,border:"1px solid #475569",background:"#1E293B",color:fut.length?"#E2E8F0":"#475569",cursor:fut.length?"pointer":"default"}}>↷</button>
+          <button onClick={reset} style={{padding:"3px 8px",fontSize:10,fontWeight:600,borderRadius:4,border:"1px solid #DC2626",background:"#1E293B",color:"#FCA5A5",cursor:"pointer"}}>⟳</button>
+          <button onClick={()=>window.print()} style={{padding:"3px 8px",fontSize:10,fontWeight:600,borderRadius:4,border:"1px solid #475569",background:"#1E293B",color:"#E2E8F0",cursor:"pointer"}}>🖨️ Print</button>
         </div>
       </div>
-
       {/* STATS */}
-      <div style={{background:"#fff",borderBottom:"1px solid #E2E8F0",padding:"5px 14px",display:"flex",gap:12,flexWrap:"wrap",fontSize:10}}>
+      <div className="no-print" style={{background:"#fff",borderBottom:"1px solid #E2E8F0",padding:"5px 14px",display:"flex",gap:12,flexWrap:"wrap",fontSize:10}}>
         <span><strong>{stats.total}</strong> תרגילים</span>
         <span style={{color:"#DC2626"}}>⛔ <strong>{stats.bl}</strong> חוסמים</span>
         <span style={{color:"#D97706"}}>⚠️ <strong>{stats.ch}</strong> לבדיקה</span>
         <span style={{color:"#2563EB"}}>📋 <strong>{stats.gap}</strong> פערים</span>
         <span style={{color:"#6B7280"}}>🎯 <strong>{pool.length}</strong> לא משובצים</span>
       </div>
-
       {/* TABLE */}
-      <div style={{overflowX:"auto",padding:"0 0 100px"}}>
+      <div className="print-root" style={{overflowX:"auto",padding:"0 0 100px"}}>
         <div style={{minWidth:1050,padding:"0 10px"}}>
-          {/* HEADERS */}
           <div style={{background:"#F1F5F9",borderBottom:"2px solid #CBD5E1",padding:"6px 0",marginTop:4}}>
             <div style={{display:"grid",gridTemplateColumns:"80px repeat(7, 1fr)",gap:3}}>
               <div style={{fontSize:8,fontWeight:700,color:"#64748B",padding:"2px 5px"}}>שיעור</div>
               {SLOTS.map(s=><div key={s.k} style={{fontSize:8,fontWeight:700,color:"#475569",padding:"3px 4px",background:s.bg,borderRadius:3,textAlign:"center"}}>{s.i} <span style={{fontWeight:800}}>{s.h}</span> <span style={{fontSize:7,opacity:.6}}>/ {s.e}</span></div>)}
             </div>
           </div>
-
-          {/* ROWS */}
-          {fc.map(c=>{
-            const ri = cls.findIndex(x=>x.n===c.n);
-            const ic = coll[c.n];
-            return (
-              <div key={c.n} style={{marginTop:3,background:"#fff",borderRadius:7,border:"1px solid #E2E8F0",overflow:"hidden",boxShadow:"0 1px 2px rgba(0,0,0,.03)"}}>
-                <div style={{display:"grid",gridTemplateColumns:"80px 1fr",cursor:"pointer",alignItems:"stretch"}} onClick={()=>setColl(p=>({...p,[c.n]:!p[c.n]}))}>
-                  <div style={{background:PC[c.p],color:"#fff",padding:"5px 6px",display:"flex",flexDirection:"column",justifyContent:"center",minHeight:ic?32:"auto"}}>
-                    <div style={{fontSize:7.5,fontWeight:700,opacity:.6}}>חלק {c.p}</div>
-                    <div className="heb" style={{fontSize:14,fontWeight:800,lineHeight:1.1}}>{c.n}. {c.t}</div>
-                    <div style={{fontSize:8,opacity:.7}}>{c.te}</div>
-                    {!ic && <div className="heb" style={{fontSize:7,opacity:.5,marginTop:2,lineHeight:1.2}}>{c.th}</div>}
-                    <div style={{fontSize:8,marginTop:2,opacity:.4}}>{ic?"▸":"▾"}</div>
-                  </div>
-                  {!ic && (
-                    <div style={{display:"grid",gridTemplateColumns:"repeat(7, 1fr)",gap:3,padding:3}} onClick={e=>e.stopPropagation()}>
-                      {c.s.map((sl,si) => <div key={si}><Block it={sl} a="c" ci={ri} si={si}/></div>)}
-                    </div>
-                  )}
-                  {ic && (
-                    <div style={{padding:"6px 8px",display:"flex",alignItems:"center",gap:3,flexWrap:"wrap"}} onClick={e=>e.stopPropagation()}>
-                      {c.s.map((sl,si) => {
-                        const cat=CAT[sl.cat]||CAT.Skip; const fi=flg(sl.fl);
-                        return <span key={si} style={{fontSize:7.5,padding:"1px 4px",borderRadius:3,background:fi?fi.bg:cat.bg,border:`1px solid ${cat.bd}`,color:cat.c,fontWeight:700,whiteSpace:"nowrap"}}>{sl.vid||(sl.cat==="Skip"?"—":"TXT")}</span>;
-                      })}
-                    </div>
-                  )}
+          {fc.map(c=>{const ri=cls.findIndex(x=>x.n===c.n);const ic=coll[c.n];return(
+            <div key={c.n} className="class-row" style={{marginTop:3,background:"#fff",borderRadius:7,border:"1px solid #E2E8F0",overflow:"hidden",boxShadow:"0 1px 2px rgba(0,0,0,.03)"}}>
+              <div style={{display:"grid",gridTemplateColumns:"80px 1fr",cursor:"pointer",alignItems:"stretch"}} onClick={()=>setColl(p=>({...p,[c.n]:!p[c.n]}))}>
+                <div style={{background:PC[c.p],color:"#fff",padding:"5px 6px",display:"flex",flexDirection:"column",justifyContent:"center",minHeight:ic?32:"auto"}}>
+                  <div style={{fontSize:7.5,fontWeight:700,opacity:.6}}>חלק {c.p}</div>
+                  <div className="heb" style={{fontSize:14,fontWeight:800,lineHeight:1.1}}>{c.n}. {c.t}</div>
+                  <div style={{fontSize:8,opacity:.7}}>{c.te}</div>
+                  {!ic&&<div className="heb" style={{fontSize:7,opacity:.5,marginTop:2,lineHeight:1.2}}>{c.th}</div>}
+                  <div style={{fontSize:8,marginTop:2,opacity:.4}}>{ic?"▸":"▾"}</div>
                 </div>
+                {!ic&&(<div className="grid-slots" style={{display:"grid",gridTemplateColumns:"repeat(7, 1fr)",gap:3,padding:3}} onClick={e=>e.stopPropagation()}>
+                  {c.s.map((sl,si)=><div key={si}><Block it={sl} a="c" ci={ri} si={si}/></div>)}
+                </div>)}
+                {ic&&(<div style={{padding:"6px 8px",display:"flex",alignItems:"center",gap:3,flexWrap:"wrap"}} onClick={e=>e.stopPropagation()}>
+                  {c.s.map((sl,si)=>{const cat=CAT[sl.cat]||CAT.Skip;const fi=flg(sl.fl);return<span key={si} style={{fontSize:7.5,padding:"1px 4px",borderRadius:3,background:fi?fi.bg:cat.bg,border:`1px solid ${cat.bd}`,color:cat.c,fontWeight:700,whiteSpace:"nowrap"}}>{sl.vid||(sl.cat==="Skip"?"—":"TXT")}</span>;})}
+                </div>)}
               </div>
-            );
-          })}
-
+            </div>);})}
           {/* UNASSIGNED */}
-          <div
-            style={{marginTop:16,background:"#fff",borderRadius:7,border:"2px dashed #CBD5E1",padding:12}}
-            onDragOver={e => handleDragOver(e, {a:"u",si:pool.length})}
-            onDragLeave={handleDragLeave}
-            onDrop={e => handleDrop(e, {a:"u",si:pool.length})}
-          >
+          <div className="unassigned-section" style={{marginTop:16,background:"#fff",borderRadius:7,border:"2px dashed #CBD5E1",padding:12}} onDragOver={e=>handleDragOver(e,{a:"u",si:pool.length})} onDragLeave={handleDragLeave} onDrop={e=>handleDrop(e,{a:"u",si:pool.length})}>
             <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
               <span className="heb" style={{fontSize:13,fontWeight:800}}>🎯 סרטונים לא משובצים</span>
               <span style={{fontSize:9,color:"#6B7280"}}>({pool.length} פריטים — גרור למשבצת)</span>
             </div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill, minmax(170px, 1fr))",gap:3}}>
-              {pool.map((it,i) => <div key={it.id||i}><Block it={it} a="u" ci={null} si={i}/></div>)}
-              {!pool.length && <div style={{color:"#9CA3AF",fontSize:11,padding:8}}>הכל משובץ!</div>}
+              {pool.map((it,i)=><div key={it.id||i}><Block it={it} a="u" ci={null} si={i}/></div>)}
+              {!pool.length&&<div style={{color:"#9CA3AF",fontSize:11,padding:8}}>הכל משובץ!</div>}
             </div>
           </div>
         </div>
       </div>
-
-      {/* EDIT MODAL */}
-      {editing && (
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setEditing(null)}>
-          <div style={{background:"#fff",borderRadius:10,padding:18,width:380,maxWidth:"92vw",boxShadow:"0 20px 60px rgba(0,0,0,.3)"}} onClick={e=>e.stopPropagation()}>
-            <h3 style={{margin:"0 0 12px",fontSize:14,fontWeight:700}}>עריכת תרגיל</h3>
-            <div style={{display:"flex",flexDirection:"column",gap:7}}>
-              {[["Name (EN)","name",false],["שם (עברית)","heb",true],["Video ID","vid",false],["הערה","fn",false]].map(([lb,k,rtl])=>
-                <label key={k} style={{fontSize:10,fontWeight:600}}>{lb}<input dir={rtl?"rtl":"ltr"} value={ev[k]||""} onChange={e=>setEv(v=>({...v,[k]:e.target.value}))} style={{width:"100%",padding:"4px 7px",border:"1px solid #D1D5DB",borderRadius:4,fontSize:11,marginTop:1,fontFamily:k==="vid"?"'DM Mono',monospace":"inherit"}}/></label>)}
-              <label style={{fontSize:10,fontWeight:600}}>קטגוריה<select value={ev.cat} onChange={e=>setEv(v=>({...v,cat:e.target.value}))} style={{width:"100%",padding:"4px 7px",border:"1px solid #D1D5DB",borderRadius:4,fontSize:11,marginTop:1}}>{Object.entries(CAT).map(([k,v])=><option key={k} value={k}>{k}: {v.l}</option>)}</select></label>
-            </div>
-            <div style={{display:"flex",justifyContent:"flex-end",gap:5,marginTop:12}}>
-              <button onClick={()=>setEditing(null)} style={{padding:"4px 12px",fontSize:11,borderRadius:4,border:"1px solid #D1D5DB",background:"#fff",cursor:"pointer"}}>ביטול</button>
-              <button onClick={saveEdit} style={{padding:"4px 12px",fontSize:11,fontWeight:700,borderRadius:4,border:"none",background:"#2563EB",color:"#fff",cursor:"pointer"}}>שמור</button>
-            </div>
-          </div>
+      {/* FULL EDIT MODAL (right-click) */}
+      {editing&&(<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setEditing(null)}><div style={{background:"#fff",borderRadius:10,padding:18,width:400,maxWidth:"92vw",boxShadow:"0 20px 60px rgba(0,0,0,.3)"}} onClick={e=>e.stopPropagation()}>
+        <h3 className="heb" style={{margin:"0 0 12px",fontSize:14,fontWeight:700}}>עריכת תרגיל — כל השדות</h3>
+        <div style={{display:"flex",flexDirection:"column",gap:7}}>
+          {[["שם (עברית)","heb",true],["Name (EN)","name",false],["Video ID","vid",false],["הערה","fn",false]].map(([lb,k,rtl])=>
+            <label key={k} style={{fontSize:10,fontWeight:600}}>{lb}<input dir={rtl?"rtl":"ltr"} value={ev[k]||""} onChange={e=>setEv(v=>({...v,[k]:e.target.value}))} style={{width:"100%",padding:"4px 7px",border:"1px solid #D1D5DB",borderRadius:4,fontSize:11,marginTop:1,fontFamily:k==="vid"?"'DM Mono',monospace":"inherit"}}/></label>)}
+          <label style={{fontSize:10,fontWeight:600}}>טקסט<textarea dir="rtl" value={ev.txt||""} onChange={e=>setEv(v=>({...v,txt:e.target.value}))} rows={3} style={{width:"100%",padding:"4px 7px",border:"1px solid #D1D5DB",borderRadius:4,fontSize:11,marginTop:1,resize:"vertical"}}/></label>
+          <label style={{fontSize:10,fontWeight:600}}>קטגוריה<select value={ev.cat} onChange={e=>setEv(v=>({...v,cat:e.target.value}))} style={{width:"100%",padding:"4px 7px",border:"1px solid #D1D5DB",borderRadius:4,fontSize:11,marginTop:1}}>{Object.entries(CAT).map(([k,v])=><option key={k} value={k}>{k}: {v.l}</option>)}</select></label>
         </div>
-      )}
-
+        <div style={{display:"flex",justifyContent:"flex-end",gap:5,marginTop:12}}>
+          <button onClick={()=>setEditing(null)} style={{padding:"4px 12px",fontSize:11,borderRadius:4,border:"1px solid #D1D5DB",background:"#fff",cursor:"pointer"}}>ביטול</button>
+          <button onClick={saveFull} style={{padding:"4px 12px",fontSize:11,fontWeight:700,borderRadius:4,border:"none",background:"#2563EB",color:"#fff",cursor:"pointer"}}>שמור</button>
+        </div>
+      </div></div>)}
       {/* ADD MODAL */}
-      {adding && (
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setAdding(null)}>
-          <div style={{background:"#fff",borderRadius:10,padding:18,width:380,maxWidth:"92vw",boxShadow:"0 20px 60px rgba(0,0,0,.3)"}} onClick={e=>e.stopPropagation()}>
-            <h3 style={{margin:"0 0 12px",fontSize:14,fontWeight:700}}>הוספת תרגיל — שיעור {cls[adding.ci]?.n}, משבצת {adding.si+1}</h3>
-            <div style={{display:"flex",flexDirection:"column",gap:7}}>
-              {[["Name (EN)","name",false],["שם (עברית)","heb",true],["Video ID","vid",false]].map(([lb,k,rtl])=>
-                <label key={k} style={{fontSize:10,fontWeight:600}}>{lb}<input dir={rtl?"rtl":"ltr"} value={nv[k]||""} onChange={e=>setNv(v=>({...v,[k]:e.target.value}))} style={{width:"100%",padding:"4px 7px",border:"1px solid #D1D5DB",borderRadius:4,fontSize:11,marginTop:1,fontFamily:k==="vid"?"'DM Mono',monospace":"inherit"}}/></label>)}
-              <label style={{fontSize:10,fontWeight:600}}>Category<select value={nv.cat} onChange={e=>setNv(v=>({...v,cat:e.target.value}))} style={{width:"100%",padding:"4px 7px",border:"1px solid #D1D5DB",borderRadius:4,fontSize:11,marginTop:1}}>{Object.entries(CAT).map(([k,v])=><option key={k} value={k}>{k}: {v.l}</option>)}</select></label>
-            </div>
-            <div style={{display:"flex",justifyContent:"flex-end",gap:5,marginTop:12}}>
-              <button onClick={()=>setAdding(null)} style={{padding:"4px 12px",fontSize:11,borderRadius:4,border:"1px solid #D1D5DB",background:"#fff",cursor:"pointer"}}>ביטול</button>
-              <button onClick={doAdd} style={{padding:"4px 12px",fontSize:11,fontWeight:700,borderRadius:4,border:"none",background:"#059669",color:"#fff",cursor:"pointer"}}>הוסף</button>
-            </div>
-          </div>
+      {adding&&(<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setAdding(null)}><div style={{background:"#fff",borderRadius:10,padding:18,width:380,maxWidth:"92vw",boxShadow:"0 20px 60px rgba(0,0,0,.3)"}} onClick={e=>e.stopPropagation()}>
+        <h3 className="heb" style={{margin:"0 0 12px",fontSize:14,fontWeight:700}}>הוספת תרגיל — שיעור {cls[adding.ci]?.n}, משבצת {adding.si+1}</h3>
+        <div style={{display:"flex",flexDirection:"column",gap:7}}>
+          {[["שם (עברית)","heb",true],["Name (EN)","name",false],["Video ID","vid",false]].map(([lb,k,rtl])=>
+            <label key={k} style={{fontSize:10,fontWeight:600}}>{lb}<input dir={rtl?"rtl":"ltr"} value={nv[k]||""} onChange={e=>setNv(v=>({...v,[k]:e.target.value}))} style={{width:"100%",padding:"4px 7px",border:"1px solid #D1D5DB",borderRadius:4,fontSize:11,marginTop:1}}/></label>)}
+          <label style={{fontSize:10,fontWeight:600}}>קטגוריה<select value={nv.cat} onChange={e=>setNv(v=>({...v,cat:e.target.value}))} style={{width:"100%",padding:"4px 7px",border:"1px solid #D1D5DB",borderRadius:4,fontSize:11,marginTop:1}}>{Object.entries(CAT).map(([k,v])=><option key={k} value={k}>{k}: {v.l}</option>)}</select></label>
         </div>
-      )}
-    </div>
-  );
+        <div style={{display:"flex",justifyContent:"flex-end",gap:5,marginTop:12}}>
+          <button onClick={()=>setAdding(null)} style={{padding:"4px 12px",fontSize:11,borderRadius:4,border:"1px solid #D1D5DB",background:"#fff",cursor:"pointer"}}>ביטול</button>
+          <button onClick={doAdd} style={{padding:"4px 12px",fontSize:11,fontWeight:700,borderRadius:4,border:"none",background:"#059669",color:"#fff",cursor:"pointer"}}>הוסף</button>
+        </div>
+      </div></div>)}
+    </div>);
 }
-
 ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
 </body>
