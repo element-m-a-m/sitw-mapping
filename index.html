@@ -11,7 +11,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { font-size: 13px; }
+  html { font-size: 14px; }
   body { font-family: 'Assistant', 'Segoe UI', sans-serif; background: #F1F5F9; color: #1E293B; }
   ::-webkit-scrollbar { height: 7px; width: 7px; }
   ::-webkit-scrollbar-track { background: #E2E8F0; border-radius: 4px; }
@@ -42,16 +42,17 @@ const CAT = {
 };
 
 const SLOTS = [
-  {k:"intro",h:"N.1 הקדמה",e:"Intro",i:"📖",bg:"#DBEAFE"},
-  {k:"reg",h:"N.2 ויסות",e:"Regulation",i:"🌬️",bg:"#CFFAFE"},
-  {k:"body",h:"N.3 מודעות גופנית",e:"Body Awareness",i:"🧘",bg:"#D1FAE5"},
-  {k:"move",h:"N.4 תנועה",e:"Movement",i:"🏃",bg:"#EDE9FE"},
-  {k:"combat",h:"N.5 קרב",e:"Combat",i:"🥊",bg:"#FFE4E6"},
-  {k:"integ",h:"N.6 אינטגרציה",e:"Integration",i:"🔄",bg:"#FEF3C7"},
-  {k:"refl",h:"N.7 רפלקציה",e:"Reflection",i:"📝",bg:"#F3F4F6"},
+  {k:"intro",h:"N.1 הקדמה",e:"Intro",i:"📖",bg:"#DBEAFE",bc:"#93C5FD"},
+  {k:"reg",h:"N.2 ויסות",e:"Regulation",i:"🌬️",bg:"#CFFAFE",bc:"#67E8F9"},
+  {k:"body",h:"N.3 מודעות גופנית",e:"Body Awareness",i:"🧘",bg:"#D1FAE5",bc:"#6EE7B7"},
+  {k:"move",h:"N.4 תנועה",e:"Movement",i:"🏃",bg:"#EDE9FE",bc:"#C4B5FD"},
+  {k:"combat",h:"N.5 קרב",e:"Combat",i:"🥊",bg:"#FFE4E6",bc:"#FCA5A5"},
+  {k:"integ",h:"N.6 אינטגרציה",e:"Integration",i:"🔄",bg:"#FEF3C7",bc:"#FCD34D"},
+  {k:"refl",h:"N.7 רפלקציה",e:"Reflection",i:"📝",bg:"#F3F4F6",bc:"#D1D5DB"},
 ];
 
 const PC = {A:"#1E40AF",B:"#7C3AED",C:"#047857"};
+const PCbg = {A:"#EFF6FF",B:"#F5F3FF",C:"#ECFDF5"};
 const uid = () => Math.random().toString(36).substr(2,9);
 const mk = (n,h,v,cat,fl=null,fn="") => ({id:uid(),name:n,heb:h,vid:v,cat,fl,fn});
 const clone = o => JSON.parse(JSON.stringify(o));
@@ -136,29 +137,34 @@ function App() {
   const openAdd=(ci,si)=>{setAdding({ci,si});setNv({name:"",heb:"",vid:"",cat:"Cat 1",fl:null,fn:""});};
   const doAdd=()=>{if(!adding)return;push();const nc=clone(cls);nc[adding.ci].s[adding.si]={...nv,id:uid()};setCls(nc);setAdding(null);};
 
-  const flg=f=>f==="blocker"?{bg:"#FEE2E2",i:"⛔",t:"BLOCKER"}:f==="check"?{bg:"#FEF3C7",i:"⚠️",t:"CHECK"}:f==="gap"?{bg:"#DBEAFE",i:"📋",t:"GAP"}:f==="decision"?{bg:"#F3E8FF",i:"🤔",t:"DECIDE"}:null;
+  const flg=f=>f==="blocker"?{bg:"#FEE2E2",i:"⛔",t:"BLOCKER",tc:"#991B1B"}:f==="check"?{bg:"#FEF3C7",i:"⚠️",t:"CHECK",tc:"#92400E"}:f==="gap"?{bg:"#DBEAFE",i:"📋",t:"GAP",tc:"#1E40AF"}:f==="decision"?{bg:"#F3E8FF",i:"🤔",t:"DECIDE",tc:"#6B21A8"}:null;
   const stats={total:cls.reduce((a,c)=>a+c.s.filter(s=>s.cat!=="Skip"&&s.name!=="(empty)").length,0),bl:cls.reduce((a,c)=>a+c.s.filter(s=>s.fl==="blocker").length,0),gap:cls.reduce((a,c)=>a+c.s.filter(s=>s.fl==="gap").length,0),ch:cls.reduce((a,c)=>a+c.s.filter(s=>s.fl==="check").length,0)};
 
-  const Block=({it,a,ci,si})=>{
+  /* ── EXERCISE BLOCK ── */
+  const Block=({it,a,ci,si,slot})=>{
     const cat=CAT[it.cat]||CAT.Skip;const fi=flg(it.fl);const dragging=src?.a===a&&src?.ci===ci&&src?.si===si;const dropping=ovr?.a===a&&ovr?.ci===ci&&ovr?.si===si;
-    if(it.name==="(empty)"||(!it.name&&!it.vid))return(<div onDragOver={e=>dO(e,{a,ci,si})} onDrop={e=>dD(e,{a,ci,si})} onDragLeave={()=>setOvr(null)} onClick={()=>a==="c"&&openAdd(ci,si)} style={{border:`2px dashed ${dropping?"#3B82F6":"#D1D5DB"}`,background:dropping?"#EFF6FF":"#FAFAFA",borderRadius:6,padding:6,height:52,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",transition:"all .12s"}}><span style={{color:"#9CA3AF",fontSize:10}}>+ הוסף</span></div>);
+    if(it.name==="(empty)"||(!it.name&&!it.vid))return(
+      <div onDragOver={e=>dO(e,{a,ci,si})} onDrop={e=>dD(e,{a,ci,si})} onDragLeave={()=>setOvr(null)} onClick={()=>a==="c"&&openAdd(ci,si)}
+        style={{border:`2px dashed ${dropping?"#3B82F6":"#D1D5DB"}`,background:dropping?"#EFF6FF":"#FAFAFA",borderRadius:8,padding:10,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",transition:"all .12s",minHeight:56}}>
+        <span style={{color:"#9CA3AF",fontSize:12}}>+ הוסף</span>
+      </div>);
     return(
       <div draggable onDragStart={e=>dS(e,{a,ci,si})} onDragOver={e=>dO(e,{a,ci,si})} onDrop={e=>dD(e,{a,ci,si})} onDragLeave={()=>setOvr(null)} onDoubleClick={()=>startEdit(a,ci,si)}
-        style={{background:cat.bg,border:`1.5px solid ${dropping?"#3B82F6":cat.bd}`,borderRadius:6,padding:"5px 7px",cursor:"grab",position:"relative",opacity:dragging?.35:1,transition:"all .12s",minHeight:52,boxShadow:dropping?"0 0 0 2px #3B82F6":"0 1px 2px rgba(0,0,0,.04)"}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:2}}>
+        style={{background:cat.bg,border:`1.5px solid ${dropping?"#3B82F6":cat.bd}`,borderRadius:8,padding:"8px 10px",cursor:"grab",position:"relative",opacity:dragging?.35:1,transition:"all .12s",minHeight:56,boxShadow:dropping?"0 0 0 2px #3B82F6":"0 1px 3px rgba(0,0,0,.05)"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:4}}>
           <div style={{flex:1,minWidth:0}}>
-            <div style={{display:"flex",alignItems:"center",gap:3,flexWrap:"wrap",marginBottom:1}}>
-              {it.vid&&<span className="mono" style={{display:"inline-block",background:cat.c,color:"#fff",fontSize:8.5,fontWeight:600,padding:"0 4px",borderRadius:3,letterSpacing:.3}}>{it.vid}</span>}
-              {it.cat!=="Skip"&&it.cat!=="Text"&&<span style={{display:"inline-block",background:"rgba(0,0,0,.05)",color:cat.c,fontSize:7.5,fontWeight:700,padding:"0 4px",borderRadius:3}}>{cat.l}</span>}
+            <div style={{display:"flex",alignItems:"center",gap:4,flexWrap:"wrap",marginBottom:2}}>
+              {it.vid&&<span className="mono" style={{display:"inline-block",background:cat.c,color:"#fff",fontSize:10,fontWeight:600,padding:"1px 5px",borderRadius:4,letterSpacing:.3}}>{it.vid}</span>}
+              {it.cat!=="Skip"&&it.cat!=="Text"&&<span style={{display:"inline-block",background:"rgba(0,0,0,.06)",color:cat.c,fontSize:9,fontWeight:700,padding:"1px 5px",borderRadius:4}}>{cat.l}</span>}
             </div>
-            {it.heb&&<div className="heb" style={{fontSize:12.5,fontWeight:800,color:"#111827",lineHeight:1.2,marginTop:1}}>{it.heb}</div>}
-            <div style={{fontSize:9.5,color:"#6B7280",lineHeight:1.15,marginTop:1}}>{it.name}</div>
+            {it.heb&&<div className="heb" style={{fontSize:14,fontWeight:800,color:"#111827",lineHeight:1.25,marginTop:2}}>{it.heb}</div>}
+            <div style={{fontSize:11,color:"#6B7280",lineHeight:1.2,marginTop:2}}>{it.name}</div>
           </div>
-          <button onClick={e=>{e.stopPropagation();del(a,ci,si);}} style={{background:"none",border:"none",cursor:"pointer",color:"#9CA3AF",fontSize:12,padding:"0 1px",lineHeight:1,flexShrink:0}} title="Remove">×</button>
+          <button onClick={e=>{e.stopPropagation();del(a,ci,si);}} style={{background:"none",border:"none",cursor:"pointer",color:"#9CA3AF",fontSize:14,padding:"0 2px",lineHeight:1,flexShrink:0}} title="Remove">×</button>
         </div>
-        {fi&&<div style={{marginTop:2,display:"flex",alignItems:"center",gap:2,background:fi.bg,borderRadius:3,padding:"1px 4px"}}>
-          <span style={{fontSize:8}}>{fi.i}</span><span style={{fontSize:7.5,fontWeight:700,color:"#92400E",letterSpacing:.3}}>{fi.t}</span>
-          {it.fn&&<span style={{fontSize:7.5,color:"#78716C",marginLeft:2}}>{it.fn}</span>}
+        {fi&&<div style={{marginTop:4,display:"flex",alignItems:"center",gap:3,background:fi.bg,borderRadius:4,padding:"2px 6px"}}>
+          <span style={{fontSize:10}}>{fi.i}</span><span style={{fontSize:9,fontWeight:700,color:fi.tc,letterSpacing:.3}}>{fi.t}</span>
+          {it.fn&&<span style={{fontSize:9,color:"#78716C",marginLeft:3}}>{it.fn}</span>}
         </div>}
       </div>
     );
@@ -167,25 +173,25 @@ function App() {
   const fc=filt==="all"?cls:cls.filter(c=>c.p===filt);
 
   return(
-    <div style={{minHeight:"100vh"}}>
+    <div style={{minHeight:"100vh",maxWidth:900,margin:"0 auto"}}>
       {/* TOOLBAR */}
-      <div style={{position:"sticky",top:0,zIndex:50,background:"#0F172A",color:"#fff",padding:"7px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:5,boxShadow:"0 4px 12px rgba(0,0,0,.15)"}}>
-        <div style={{display:"flex",alignItems:"center",gap:8}}>
-          <span style={{fontWeight:800,fontSize:14,letterSpacing:-.5}}>איתן ברוח</span>
-          <span style={{fontSize:10,color:"#94A3B8"}}>מיפוי תרגילים — 12 שיעורים × 7 משבצות</span>
+      <div style={{position:"sticky",top:0,zIndex:50,background:"#0F172A",color:"#fff",padding:"10px 16px",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:6,boxShadow:"0 4px 12px rgba(0,0,0,.15)"}}>
+        <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <span style={{fontWeight:800,fontSize:16,letterSpacing:-.5}}>איתן ברוח</span>
+          <span style={{fontSize:11,color:"#94A3B8"}}>מיפוי תרגילים</span>
         </div>
-        <div style={{display:"flex",alignItems:"center",gap:4,flexWrap:"wrap"}}>
-          <div style={{display:"flex",gap:2,marginRight:4}}>
-            {["all","A","B","C"].map(f=><button key={f} onClick={()=>setFilt(f)} style={{padding:"2px 8px",fontSize:10,fontWeight:700,borderRadius:3,border:"none",cursor:"pointer",background:filt===f?"#3B82F6":"#334155",color:filt===f?"#fff":"#94A3B8",transition:"all .12s"}}>{f==="all"?"הכל":`חלק ${f}`}</button>)}
+        <div style={{display:"flex",alignItems:"center",gap:5,flexWrap:"wrap"}}>
+          <div style={{display:"flex",gap:3,marginRight:6}}>
+            {["all","A","B","C"].map(f=><button key={f} onClick={()=>setFilt(f)} style={{padding:"3px 10px",fontSize:11,fontWeight:700,borderRadius:4,border:"none",cursor:"pointer",background:filt===f?"#3B82F6":"#334155",color:filt===f?"#fff":"#94A3B8",transition:"all .12s"}}>{f==="all"?"הכל":`חלק ${f}`}</button>)}
           </div>
-          <button onClick={undo} disabled={!hist.length} style={{padding:"3px 8px",fontSize:10,fontWeight:600,borderRadius:4,border:"1px solid #475569",background:"#1E293B",color:hist.length?"#E2E8F0":"#475569",cursor:hist.length?"pointer":"default"}}>↶ Undo</button>
-          <button onClick={redo} disabled={!fut.length} style={{padding:"3px 8px",fontSize:10,fontWeight:600,borderRadius:4,border:"1px solid #475569",background:"#1E293B",color:fut.length?"#E2E8F0":"#475569",cursor:fut.length?"pointer":"default"}}>↷ Redo</button>
-          <button onClick={reset} style={{padding:"3px 8px",fontSize:10,fontWeight:600,borderRadius:4,border:"1px solid #DC2626",background:"#1E293B",color:"#FCA5A5",cursor:"pointer"}}>⟳ Reset</button>
+          <button onClick={undo} disabled={!hist.length} style={{padding:"4px 10px",fontSize:11,fontWeight:600,borderRadius:4,border:"1px solid #475569",background:"#1E293B",color:hist.length?"#E2E8F0":"#475569",cursor:hist.length?"pointer":"default"}}>↶ Undo</button>
+          <button onClick={redo} disabled={!fut.length} style={{padding:"4px 10px",fontSize:11,fontWeight:600,borderRadius:4,border:"1px solid #475569",background:"#1E293B",color:fut.length?"#E2E8F0":"#475569",cursor:fut.length?"pointer":"default"}}>↷ Redo</button>
+          <button onClick={reset} style={{padding:"4px 10px",fontSize:11,fontWeight:600,borderRadius:4,border:"1px solid #DC2626",background:"#1E293B",color:"#FCA5A5",cursor:"pointer"}}>⟳ Reset</button>
         </div>
       </div>
 
       {/* STATS */}
-      <div style={{background:"#fff",borderBottom:"1px solid #E2E8F0",padding:"5px 14px",display:"flex",gap:12,flexWrap:"wrap",fontSize:10}}>
+      <div style={{background:"#fff",borderBottom:"1px solid #E2E8F0",padding:"8px 16px",display:"flex",gap:16,flexWrap:"wrap",fontSize:12}}>
         <span><strong>{stats.total}</strong> תרגילים</span>
         <span style={{color:"#DC2626"}}>⛔ <strong>{stats.bl}</strong> חוסמים</span>
         <span style={{color:"#D97706"}}>⚠️ <strong>{stats.ch}</strong> לבדיקה</span>
@@ -193,84 +199,98 @@ function App() {
         <span style={{color:"#6B7280"}}>🎯 <strong>{pool.length}</strong> לא משובצים</span>
       </div>
 
-      {/* SCROLLABLE TABLE */}
-      <div style={{overflowX:"auto",padding:"0 0 100px"}}>
-        <div style={{minWidth:1400,padding:"0 14px"}}>
-          {/* HEADERS */}
-          <div style={{position:"sticky",top:36,zIndex:40,background:"#F1F5F9",borderBottom:"2px solid #CBD5E1",padding:"4px 0"}}>
-            <div style={{display:"grid",gridTemplateColumns:"100px repeat(7, 1fr)",gap:3}}>
-              <div style={{fontSize:8,fontWeight:700,color:"#64748B",padding:"2px 5px"}}>שיעור</div>
-              {SLOTS.map(s=><div key={s.k} style={{fontSize:8,fontWeight:700,color:"#475569",padding:"3px 4px",background:s.bg,borderRadius:3,textAlign:"center"}}>{s.i} <span style={{fontWeight:800}}>{s.h}</span> <span style={{fontSize:7,opacity:.6}}>/ {s.e}</span></div>)}
-            </div>
-          </div>
-
-          {/* ROWS */}
-          {fc.map(c=>{
-            const ri=cls.findIndex(x=>x.n===c.n);const ic=coll[c.n];
-            return(
-              <div key={c.n} style={{marginTop:3,background:"#fff",borderRadius:7,border:"1px solid #E2E8F0",overflow:"hidden",boxShadow:"0 1px 2px rgba(0,0,0,.03)"}}>
-                <div style={{display:"grid",gridTemplateColumns:"100px 1fr",cursor:"pointer",alignItems:"stretch"}} onClick={()=>setColl(p=>({...p,[c.n]:!p[c.n]}))}>
-                  <div style={{background:PC[c.p],color:"#fff",padding:"6px 8px",display:"flex",flexDirection:"column",justifyContent:"center",minHeight:ic?32:"auto"}}>
-                    <div style={{fontSize:8,fontWeight:700,opacity:.6}}>חלק {c.p}</div>
-                    <div className="heb" style={{fontSize:15,fontWeight:800,lineHeight:1.1}}>{c.n}. {c.t}</div>
-                    <div style={{fontSize:8,opacity:.7}}>{c.te}</div>
-                    {!ic&&<div className="heb" style={{fontSize:7.5,opacity:.5,marginTop:2,lineHeight:1.2}}>{c.th}</div>}
-                    <div style={{fontSize:8,marginTop:2,opacity:.4}}>{ic?"▸":"▾"}</div>
-                  </div>
-                  {!ic&&(
-                    <div style={{display:"grid",gridTemplateColumns:"repeat(7, 1fr)",gap:3,padding:3}} onClick={e=>e.stopPropagation()}>
-                      {c.s.map((sl,si)=><div key={si}><Block it={sl} a="c" ci={ri} si={si}/></div>)}
-                    </div>
-                  )}
-                  {ic&&(
-                    <div style={{padding:"6px 8px",display:"flex",alignItems:"center",gap:3,flexWrap:"wrap"}} onClick={e=>e.stopPropagation()}>
-                      {c.s.map((sl,si)=>{const cat=CAT[sl.cat]||CAT.Skip;const fi=flg(sl.fl);return<span key={si} style={{fontSize:7.5,padding:"1px 4px",borderRadius:3,background:fi?fi.bg:cat.bg,border:`1px solid ${cat.bd}`,color:cat.c,fontWeight:700,whiteSpace:"nowrap"}}>{sl.vid||(sl.cat==="Skip"?"—":"TXT")}</span>;})}
-                    </div>
-                  )}
+      {/* CLASS CARDS */}
+      <div style={{padding:"12px 12px 120px"}}>
+        {fc.map(c=>{
+          const ri=cls.findIndex(x=>x.n===c.n);const ic=coll[c.n];
+          return(
+            <div key={c.n} style={{marginBottom:10,background:"#fff",borderRadius:10,border:"1px solid #E2E8F0",overflow:"hidden",boxShadow:"0 1px 4px rgba(0,0,0,.04)"}}>
+              {/* CLASS HEADER */}
+              <div onClick={()=>setColl(p=>({...p,[c.n]:!p[c.n]}))} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 14px",background:PC[c.p],color:"#fff",cursor:"pointer",userSelect:"none"}}>
+                <div style={{display:"flex",alignItems:"baseline",gap:6,flex:1}}>
+                  <span style={{fontSize:10,fontWeight:600,opacity:.6}}>חלק {c.p}</span>
+                  <span className="heb" style={{fontSize:18,fontWeight:800,lineHeight:1.1}}>{c.n}. {c.t}</span>
+                  <span style={{fontSize:11,opacity:.7}}>{c.te}</span>
+                </div>
+                <div style={{display:"flex",alignItems:"center",gap:6}}>
+                  {/* Mini flag summary */}
+                  {c.s.some(s=>s.fl==="blocker")&&<span style={{fontSize:9,background:"rgba(255,255,255,.2)",padding:"1px 6px",borderRadius:10}}>⛔ {c.s.filter(s=>s.fl==="blocker").length}</span>}
+                  {c.s.some(s=>s.fl==="gap")&&<span style={{fontSize:9,background:"rgba(255,255,255,.2)",padding:"1px 6px",borderRadius:10}}>📋 {c.s.filter(s=>s.fl==="gap").length}</span>}
+                  <span style={{fontSize:11,opacity:.6}}>{ic?"▸":"▾"}</span>
                 </div>
               </div>
-            );
-          })}
 
-          {/* UNASSIGNED */}
-          <div style={{marginTop:16,background:"#fff",borderRadius:7,border:"2px dashed #CBD5E1",padding:12}}>
-            <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
-              <span className="heb" style={{fontSize:13,fontWeight:800}}>🎯 סרטונים לא משובצים</span>
-              <span style={{fontSize:9,color:"#6B7280"}}>({pool.length} פריטים — גרור למשבצת)</span>
+              {/* CLASS THEME */}
+              {!ic&&<div className="heb" style={{padding:"6px 14px",background:PCbg[c.p],fontSize:12,color:"#64748B",borderBottom:"1px solid #E2E8F0"}}>{c.th}</div>}
+
+              {/* COLLAPSED — mini pills */}
+              {ic&&(
+                <div style={{padding:"8px 14px",display:"flex",alignItems:"center",gap:4,flexWrap:"wrap"}}>
+                  {c.s.map((sl,si)=>{const cat=CAT[sl.cat]||CAT.Skip;const fi=flg(sl.fl);return<span key={si} style={{fontSize:9,padding:"2px 6px",borderRadius:4,background:fi?fi.bg:cat.bg,border:`1px solid ${cat.bd}`,color:cat.c,fontWeight:700,whiteSpace:"nowrap"}}>{sl.vid||(sl.cat==="Skip"?"—":"TXT")}</span>;})}
+                </div>
+              )}
+
+              {/* EXPANDED — slot rows */}
+              {!ic&&(
+                <div style={{padding:"6px 10px 10px"}} onClick={e=>e.stopPropagation()}>
+                  {c.s.map((sl,si)=>{
+                    const slot = SLOTS[si];
+                    return(
+                      <div key={si} style={{display:"grid",gridTemplateColumns:"140px 1fr",gap:8,marginBottom:si<c.s.length-1?6:0,alignItems:"stretch"}}>
+                        {/* SLOT LABEL */}
+                        <div style={{background:slot.bg,border:`1.5px solid ${slot.bc}`,borderRadius:8,padding:"6px 8px",display:"flex",flexDirection:"column",justifyContent:"center",minHeight:56}}>
+                          <div style={{fontSize:13,fontWeight:800,color:"#1E293B",lineHeight:1.15}}>{slot.i} {slot.h}</div>
+                          <div style={{fontSize:10,color:"#64748B"}}>{slot.e}</div>
+                        </div>
+                        {/* EXERCISE BLOCK */}
+                        <Block it={sl} a="c" ci={ri} si={si} slot={slot}/>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill, minmax(190px, 1fr))",gap:3}} onDragOver={e=>{e.preventDefault();e.dataTransfer.dropEffect="move";}} onDrop={e=>dD(e,{a:"u",si:pool.length})}>
-              {pool.map((it,i)=><div key={it.id||i}><Block it={it} a="u" ci={null} si={i}/></div>)}
-              {!pool.length&&<div style={{color:"#9CA3AF",fontSize:11,padding:8}}>הכל משובץ!</div>}
-            </div>
+          );
+        })}
+
+        {/* UNASSIGNED POOL */}
+        <div style={{marginTop:20,background:"#fff",borderRadius:10,border:"2px dashed #CBD5E1",padding:14}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+            <span className="heb" style={{fontSize:15,fontWeight:800}}>🎯 סרטונים לא משובצים</span>
+            <span style={{fontSize:11,color:"#6B7280"}}>({pool.length} פריטים — גרור למשבצת)</span>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill, minmax(240px, 1fr))",gap:6}} onDragOver={e=>{e.preventDefault();e.dataTransfer.dropEffect="move";}} onDrop={e=>dD(e,{a:"u",si:pool.length})}>
+            {pool.map((it,i)=><div key={it.id||i}><Block it={it} a="u" ci={null} si={i}/></div>)}
+            {!pool.length&&<div style={{color:"#9CA3AF",fontSize:12,padding:10}}>הכל משובץ!</div>}
           </div>
         </div>
       </div>
 
       {/* EDIT MODAL */}
-      {editing&&(<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setEditing(null)}><div style={{background:"#fff",borderRadius:10,padding:18,width:380,maxWidth:"92vw",boxShadow:"0 20px 60px rgba(0,0,0,.3)"}} onClick={e=>e.stopPropagation()}>
-        <h3 style={{margin:"0 0 12px",fontSize:14,fontWeight:700}}>עריכת תרגיל</h3>
-        <div style={{display:"flex",flexDirection:"column",gap:7}}>
+      {editing&&(<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={()=>setEditing(null)}><div style={{background:"#fff",borderRadius:12,padding:22,width:420,maxWidth:"100%",boxShadow:"0 20px 60px rgba(0,0,0,.3)"}} onClick={e=>e.stopPropagation()}>
+        <h3 style={{margin:"0 0 14px",fontSize:16,fontWeight:700}}>עריכת תרגיל</h3>
+        <div style={{display:"flex",flexDirection:"column",gap:9}}>
           {[["Name (EN)","name",false],["שם (עברית)","heb",true],["Video ID","vid",false],["הערה","fn",false]].map(([lb,k,rtl])=>
-            <label key={k} style={{fontSize:10,fontWeight:600}}>{lb}<input dir={rtl?"rtl":"ltr"} value={ev[k]||""} onChange={e=>setEv(v=>({...v,[k]:e.target.value}))} style={{width:"100%",padding:"4px 7px",border:"1px solid #D1D5DB",borderRadius:4,fontSize:11,marginTop:1,fontFamily:k==="vid"?"'DM Mono',monospace":"inherit"}}/></label>)}
-          <label style={{fontSize:10,fontWeight:600}}>קטגוריה<select value={ev.cat} onChange={e=>setEv(v=>({...v,cat:e.target.value}))} style={{width:"100%",padding:"4px 7px",border:"1px solid #D1D5DB",borderRadius:4,fontSize:11,marginTop:1}}>{Object.entries(CAT).map(([k,v])=><option key={k} value={k}>{k}: {v.l}</option>)}</select></label>
+            <label key={k} style={{fontSize:12,fontWeight:600}}>{lb}<input dir={rtl?"rtl":"ltr"} value={ev[k]||""} onChange={e=>setEv(v=>({...v,[k]:e.target.value}))} style={{width:"100%",padding:"6px 9px",border:"1px solid #D1D5DB",borderRadius:5,fontSize:13,marginTop:2,fontFamily:k==="vid"?"'DM Mono',monospace":"inherit"}}/></label>)}
+          <label style={{fontSize:12,fontWeight:600}}>קטגוריה<select value={ev.cat} onChange={e=>setEv(v=>({...v,cat:e.target.value}))} style={{width:"100%",padding:"6px 9px",border:"1px solid #D1D5DB",borderRadius:5,fontSize:13,marginTop:2}}>{Object.entries(CAT).map(([k,v])=><option key={k} value={k}>{k}: {v.l}</option>)}</select></label>
         </div>
-        <div style={{display:"flex",justifyContent:"flex-end",gap:5,marginTop:12}}>
-          <button onClick={()=>setEditing(null)} style={{padding:"4px 12px",fontSize:11,borderRadius:4,border:"1px solid #D1D5DB",background:"#fff",cursor:"pointer"}}>ביטול</button>
-          <button onClick={saveEdit} style={{padding:"4px 12px",fontSize:11,fontWeight:700,borderRadius:4,border:"none",background:"#2563EB",color:"#fff",cursor:"pointer"}}>שמור</button>
+        <div style={{display:"flex",justifyContent:"flex-end",gap:6,marginTop:14}}>
+          <button onClick={()=>setEditing(null)} style={{padding:"6px 16px",fontSize:12,borderRadius:5,border:"1px solid #D1D5DB",background:"#fff",cursor:"pointer"}}>ביטול</button>
+          <button onClick={saveEdit} style={{padding:"6px 16px",fontSize:12,fontWeight:700,borderRadius:5,border:"none",background:"#2563EB",color:"#fff",cursor:"pointer"}}>שמור</button>
         </div>
       </div></div>)}
 
       {/* ADD MODAL */}
-      {adding&&(<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setAdding(null)}><div style={{background:"#fff",borderRadius:10,padding:18,width:380,maxWidth:"92vw",boxShadow:"0 20px 60px rgba(0,0,0,.3)"}} onClick={e=>e.stopPropagation()}>
-        <h3 style={{margin:"0 0 12px",fontSize:14,fontWeight:700}}>הוספת תרגיל — שיעור {cls[adding.ci]?.n}, משבצת {adding.si+1}</h3>
-        <div style={{display:"flex",flexDirection:"column",gap:7}}>
+      {adding&&(<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={()=>setAdding(null)}><div style={{background:"#fff",borderRadius:12,padding:22,width:420,maxWidth:"100%",boxShadow:"0 20px 60px rgba(0,0,0,.3)"}} onClick={e=>e.stopPropagation()}>
+        <h3 style={{margin:"0 0 14px",fontSize:16,fontWeight:700}}>הוספת תרגיל — שיעור {cls[adding.ci]?.n}, משבצת {adding.si+1}</h3>
+        <div style={{display:"flex",flexDirection:"column",gap:9}}>
           {[["Name (EN)","name",false],["שם (עברית)","heb",true],["Video ID","vid",false]].map(([lb,k,rtl])=>
-            <label key={k} style={{fontSize:10,fontWeight:600}}>{lb}<input dir={rtl?"rtl":"ltr"} value={nv[k]||""} onChange={e=>setNv(v=>({...v,[k]:e.target.value}))} style={{width:"100%",padding:"4px 7px",border:"1px solid #D1D5DB",borderRadius:4,fontSize:11,marginTop:1,fontFamily:k==="vid"?"'DM Mono',monospace":"inherit"}}/></label>)}
-          <label style={{fontSize:10,fontWeight:600}}>Category<select value={nv.cat} onChange={e=>setNv(v=>({...v,cat:e.target.value}))} style={{width:"100%",padding:"4px 7px",border:"1px solid #D1D5DB",borderRadius:4,fontSize:11,marginTop:1}}>{Object.entries(CAT).map(([k,v])=><option key={k} value={k}>{k}: {v.l}</option>)}</select></label>
+            <label key={k} style={{fontSize:12,fontWeight:600}}>{lb}<input dir={rtl?"rtl":"ltr"} value={nv[k]||""} onChange={e=>setNv(v=>({...v,[k]:e.target.value}))} style={{width:"100%",padding:"6px 9px",border:"1px solid #D1D5DB",borderRadius:5,fontSize:13,marginTop:2,fontFamily:k==="vid"?"'DM Mono',monospace":"inherit"}}/></label>)}
+          <label style={{fontSize:12,fontWeight:600}}>Category<select value={nv.cat} onChange={e=>setNv(v=>({...v,cat:e.target.value}))} style={{width:"100%",padding:"6px 9px",border:"1px solid #D1D5DB",borderRadius:5,fontSize:13,marginTop:2}}>{Object.entries(CAT).map(([k,v])=><option key={k} value={k}>{k}: {v.l}</option>)}</select></label>
         </div>
-        <div style={{display:"flex",justifyContent:"flex-end",gap:5,marginTop:12}}>
-          <button onClick={()=>setAdding(null)} style={{padding:"4px 12px",fontSize:11,borderRadius:4,border:"1px solid #D1D5DB",background:"#fff",cursor:"pointer"}}>ביטול</button>
-          <button onClick={doAdd} style={{padding:"4px 12px",fontSize:11,fontWeight:700,borderRadius:4,border:"none",background:"#059669",color:"#fff",cursor:"pointer"}}>הוסף</button>
+        <div style={{display:"flex",justifyContent:"flex-end",gap:6,marginTop:14}}>
+          <button onClick={()=>setAdding(null)} style={{padding:"6px 16px",fontSize:12,borderRadius:5,border:"1px solid #D1D5DB",background:"#fff",cursor:"pointer"}}>ביטול</button>
+          <button onClick={doAdd} style={{padding:"6px 16px",fontSize:12,fontWeight:700,borderRadius:5,border:"none",background:"#059669",color:"#fff",cursor:"pointer"}}>הוסף</button>
         </div>
       </div></div>)}
     </div>
