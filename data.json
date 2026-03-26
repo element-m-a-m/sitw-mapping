@@ -713,15 +713,37 @@
             "fnum": "35"
           },
           {
-            "id": "986vvc35z",
-            "name": "Combat Stance Step+Move",
-            "heb": "???",
-            "vid": "5.5",
+            "id": "b4kogp9aq",
+            "name": "Paddles — Ipsi Step Stationary",
+            "heb": "מטקות — איפסי במקום",
+            "vid": "5.15",
             "cat": "Cat 5",
             "fl": null,
-            "fn": "Not filmed — potential re-shoot",
+            "fn": "",
             "txt": "",
-            "fnum": "31"
+            "fnum": "39"
+          },
+          {
+            "id": "ydsdhrtu7",
+            "name": "Paddles Ipsi (Exec)",
+            "heb": "מטקות איפסי — ביצוע",
+            "vid": "5.17*",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "Execution clip — bonus",
+            "txt": "",
+            "fnum": "41"
+          },
+          {
+            "id": "65pn6u51i",
+            "name": "Paddles — Ipsi Step F/R/L",
+            "heb": "מטקות — איפסי קדימה/ימין/שמאל",
+            "vid": "5.16",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "40"
           }
         ],
         [
@@ -856,41 +878,7 @@
             "fnum": "27"
           }
         ],
-        [
-          {
-            "id": "b4kogp9aq",
-            "name": "Paddles — Ipsi Step Stationary",
-            "heb": "מטקות — איפסי במקום",
-            "vid": "5.15",
-            "cat": "Cat 5",
-            "fl": null,
-            "fn": "",
-            "txt": "",
-            "fnum": "39"
-          },
-          {
-            "id": "ydsdhrtu7",
-            "name": "Paddles Ipsi (Exec)",
-            "heb": "מטקות איפסי — ביצוע",
-            "vid": "5.17*",
-            "cat": "Cat 5",
-            "fl": null,
-            "fn": "Execution clip — bonus",
-            "txt": "",
-            "fnum": "41"
-          },
-          {
-            "id": "65pn6u51i",
-            "name": "Paddles — Ipsi Step F/R/L",
-            "heb": "מטקות — איפסי קדימה/ימין/שמאל",
-            "vid": "5.16",
-            "cat": "Cat 5",
-            "fl": null,
-            "fn": "",
-            "txt": "",
-            "fnum": "40"
-          }
-        ],
+        [],
         [
           {
             "id": "n4p5f3fmu",
