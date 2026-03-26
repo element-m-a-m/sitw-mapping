@@ -55,8 +55,8 @@ const IC=[
 const IU=[];
 
 function App(){
-  const[cls,setCls]=useState(()=>clone(IC));
-  const[pool,setPool]=useState(()=>clone(IU));
+  const[cls,setCls]=useState(()=>{try{const s=localStorage.getItem('sitw_cls');return s?JSON.parse(s):clone(IC);}catch(e){return clone(IC);}});
+  const[pool,setPool]=useState(()=>{try{const s=localStorage.getItem('sitw_pool');return s?JSON.parse(s):clone(IU);}catch(e){return clone(IU);}});
   const[hist,setHist]=useState([]);const[fut,setFut]=useState([]);
   const[dropTarget,setDropTarget]=useState(null);
   const[inlineEdit,setInlineEdit]=useState(null);
@@ -70,11 +70,19 @@ function App(){
   const pushH=(c,p)=>{setHist(h=>[...h.slice(-40),{c:clone(c),p:clone(p)}]);setFut([]);};
   const undo=useCallback(()=>{if(!hist.length)return;const prev=hist[hist.length-1];setFut(f=>[...f,{c:clone(cls),p:clone(pool)}]);setCls(prev.c);setPool(prev.p);setHist(h=>h.slice(0,-1));},[hist,cls,pool]);
   const redo=useCallback(()=>{if(!fut.length)return;const next=fut[fut.length-1];setHist(h=>[...h,{c:clone(cls),p:clone(pool)}]);setCls(next.c);setPool(next.p);setFut(f=>f.slice(0,-1));},[fut,cls,pool]);
-  const reset=()=>{pushH(cls,pool);setCls(clone(IC));setPool(clone(IU));};
+  const reset=()=>{pushH(cls,pool);setCls(clone(IC));setPool(clone(IU));localStorage.removeItem('sitw_cls');localStorage.removeItem('sitw_pool');};
 
   useEffect(()=>{const h=e=>{if((e.ctrlKey||e.metaKey)&&e.key==="z"&&!e.shiftKey){e.preventDefault();undo();}if((e.ctrlKey||e.metaKey)&&(e.key==="y"||(e.key==="z"&&e.shiftKey))){e.preventDefault();redo();}};window.addEventListener("keydown",h);return()=>window.removeEventListener("keydown",h);},[undo,redo]);
   // Close context menu on click anywhere
   useEffect(()=>{const h=()=>setCtxMenu(null);window.addEventListener("click",h);return()=>window.removeEventListener("click",h);},[]);
+
+  // Auto-save to localStorage
+  useEffect(()=>{localStorage.setItem('sitw_cls',JSON.stringify(cls));localStorage.setItem('sitw_pool',JSON.stringify(pool));},[cls,pool]);
+
+  // Export/Import
+  const fileRef=useRef(null);
+  const exportData=()=>{const data=JSON.stringify({cls,pool},null,2);const blob=new Blob([data],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='sitw-mapping-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);};
+  const importData=(e)=>{const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=(ev)=>{try{const data=JSON.parse(ev.target.result);if(data.cls&&data.pool){pushH(cls,pool);setCls(data.cls);setPool(data.pool);}else alert('Invalid file format');}catch(err){alert('Error: '+err.message);}};reader.readAsText(file);e.target.value='';};
 
   /* ── Auto-scroll during drag ── */
   useEffect(()=>{
@@ -183,6 +191,11 @@ function App(){
         <button onClick={redo} disabled={!fut.length} style={{padding:"3px 8px",fontSize:10,fontWeight:600,borderRadius:4,border:"1px solid #475569",background:"#1E293B",color:fut.length?"#E2E8F0":"#475569",cursor:fut.length?"pointer":"default"}}>↷</button>
         <button onClick={reset} style={{padding:"3px 8px",fontSize:10,fontWeight:600,borderRadius:4,border:"1px solid #DC2626",background:"#1E293B",color:"#FCA5A5",cursor:"pointer"}}>⟳</button>
         <button onClick={()=>window.print()} style={{padding:"3px 8px",fontSize:10,fontWeight:600,borderRadius:4,border:"1px solid #475569",background:"#1E293B",color:"#E2E8F0",cursor:"pointer"}}>🖨️</button>
+        <span style={{width:1,height:16,background:"#475569",margin:"0 4px"}}/>
+        <button onClick={exportData} style={{padding:"3px 8px",fontSize:10,fontWeight:600,borderRadius:4,border:"1px solid #475569",background:"#1E293B",color:"#E2E8F0",cursor:"pointer"}} title="Export JSON">💾</button>
+        <button onClick={()=>fileRef.current?.click()} style={{padding:"3px 8px",fontSize:10,fontWeight:600,borderRadius:4,border:"1px solid #475569",background:"#1E293B",color:"#E2E8F0",cursor:"pointer"}} title="Import JSON">📂</button>
+        <input ref={fileRef} type="file" accept=".json" onChange={importData} style={{display:"none"}}/>
+        <span style={{fontSize:9,color:"#22C55E",marginLeft:4}}>auto-saved</span>
       </div>
     </div>
     {/* STATS */}
