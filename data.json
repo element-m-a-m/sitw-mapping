@@ -986,6 +986,17 @@
             "fn": "Execution clip — bonus",
             "txt": "",
             "fnum": "43"
+          },
+          {
+            "id": "c7xxoo5t3",
+            "name": "Paddles — Contra Step F/R/L",
+            "heb": "מטקות — קונטרה קדימה/ימין/שמאל",
+            "vid": "5.20",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "44"
           }
         ],
         [
@@ -1096,19 +1107,7 @@
           }
         ],
         [],
-        [
-          {
-            "id": "c7xxoo5t3",
-            "name": "Paddles — Contra Step F/R/L",
-            "heb": "מטקות — קונטרה קדימה/ימין/שמאל",
-            "vid": "5.20",
-            "cat": "Cat 5",
-            "fl": null,
-            "fn": "",
-            "txt": "",
-            "fnum": "44"
-          }
-        ],
+        [],
         [
           {
             "id": "kgy1hh6dw",
