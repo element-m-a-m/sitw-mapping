@@ -1,0 +1,1426 @@
+{
+  "cls": [
+    {
+      "n": 1,
+      "t": "יסודות",
+      "te": "Foundations",
+      "p": "A",
+      "th": "מגע ראשון עם SBRT. כלי ויסות בסיסיים. ללא קרב.",
+      "s": [
+        [
+          {
+            "id": "k1mc41495",
+            "name": "Program Introduction",
+            "heb": "הקדמה של התוכנית",
+            "vid": "",
+            "cat": "Cat 1",
+            "fl": "gap",
+            "fn": "Ch.0 content — build on Schooler",
+            "txt": "",
+            "fnum": "1"
+          }
+        ],
+        [
+          {
+            "id": "ldthy6ms3",
+            "name": "Diaphragmatic Breathing 5/5",
+            "heb": "נשימה סרעפתית 5/5",
+            "vid": "3.1",
+            "cat": "Cat 3",
+            "fl": "blocker",
+            "fn": "File #3 NOT EDITED — potential re-shoot",
+            "txt": "",
+            "fnum": "3"
+          }
+        ],
+        [
+          {
+            "id": "be24neilr",
+            "name": "Mind-Body Scan (Standing)",
+            "heb": "סריקת גוף בעמידה",
+            "vid": "2.2",
+            "cat": "Cat 2",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "50"
+          }
+        ],
+        [
+          {
+            "id": "iin43wif5",
+            "name": "Wrist Exercises (standalone)",
+            "heb": "תרגילי שורש כף היד",
+            "vid": "8.2",
+            "cat": "Cat 8",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "16"
+          },
+          {
+            "id": "wckl4nqso",
+            "name": "Spinal Arching & Flexion",
+            "heb": "קימורים והקשתות בעמידה",
+            "vid": "8.1",
+            "cat": "Cat 8",
+            "fl": null,
+            "fn": "Spine mobility",
+            "txt": "",
+            "fnum": "17"
+          }
+        ],
+        [
+          {
+            "id": "90gyindez",
+            "name": "Empty Arm Sagittal Circles",
+            "heb": "סיבובי יד ריקה — סגיטליים",
+            "vid": "5.14",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "2 parts",
+            "txt": "",
+            "fnum": "45,46"
+          }
+        ],
+        [
+          {
+            "id": "2nfs1nr7o",
+            "name": "INTEGRATION: Wrist + Breathing",
+            "heb": "תרגילי שורש כף היד + נשימה",
+            "vid": "8.3",
+            "cat": "Cat 8",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "15"
+          }
+        ],
+        [
+          {
+            "id": "pdu8rko1s",
+            "name": "Reflection & Closure",
+            "heb": "רפלקציה וסגירה",
+            "vid": "",
+            "cat": "Text",
+            "fl": null,
+            "fn": "Text + homework",
+            "txt": "",
+            "fnum": ""
+          }
+        ]
+      ]
+    },
+    {
+      "n": 2,
+      "t": "מודעות",
+      "te": "Awareness",
+      "p": "A",
+      "th": "עוגנים. שייק בסיסי. הכנה לאיגרוף ומכניקת שוט.",
+      "s": [
+        [
+          {
+            "id": "j88vpof1c",
+            "name": "Using an Anchor",
+            "heb": "שימוש בעוגנים",
+            "vid": "1.10",
+            "cat": "Cat 1",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "18"
+          }
+        ],
+        [
+          {
+            "id": "4y9r7hlff",
+            "name": "Diaphragmatic Breathing 5/5",
+            "heb": "נשימה סרעפתית 5/5",
+            "vid": "3.1",
+            "cat": "Cat 3",
+            "fl": null,
+            "fn": "Reuse — deepen",
+            "txt": "",
+            "fnum": "3"
+          },
+          {
+            "id": "7oaidwygr",
+            "name": "Shake — Basic",
+            "heb": "שייק בסיסי",
+            "vid": "4.1",
+            "cat": "Cat 4",
+            "fl": "check",
+            "fn": "File #22 combined 4.1+4.3+4.9",
+            "txt": "",
+            "fnum": "22"
+          },
+          {
+            "id": "1qnhlmxki",
+            "name": "INTEGRATION: Shakes + Sigh",
+            "heb": "שייקים + אנחה פיזיולוגית",
+            "vid": "4.9",
+            "cat": "Cat 4",
+            "fl": "check",
+            "fn": "End of file #22",
+            "txt": "",
+            "fnum": "22"
+          }
+        ],
+        [
+          {
+            "id": "kbugw6dl1",
+            "name": "Sensations Naming",
+            "heb": "שיום תחושות",
+            "vid": "2.1",
+            "cat": "Cat 2",
+            "fl": "blocker",
+            "fn": "File #10 NOT EDITED",
+            "txt": "",
+            "fnum": "10"
+          }
+        ],
+        [
+          {
+            "id": "0zzqxm8xt",
+            "name": "Heavy Legs — Weight Dist.",
+            "heb": "רגליים כבדות — מיפוי סומטי",
+            "vid": "5.1",
+            "cat": "Cat 5",
+            "fl": "decision",
+            "fn": "Audio-primary. ALT body-awareness.",
+            "txt": "",
+            "fnum": "20"
+          }
+        ],
+        [
+          {
+            "id": "rgfv3ix9i",
+            "name": "Punching Prep — Fist/Gloves",
+            "heb": "הכנה לאיגרוף — סגירת אגרוף",
+            "vid": "7.3",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "54"
+          },
+          {
+            "id": "jvbj9eyar",
+            "name": "Boxing Mechanics — Whip",
+            "heb": "מכניקת איגרוף — שוט",
+            "vid": "7.1",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "48"
+          }
+        ],
+        [
+          {
+            "id": "wtcoch3sm",
+            "name": "INTEGRATION: Scan + Breathing",
+            "heb": "סריקת גוף + נשימה 5/5",
+            "vid": "2.4",
+            "cat": "Cat 2",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "55"
+          }
+        ],
+        [
+          {
+            "id": "hii6uhbw5",
+            "name": "Reflection & Closure",
+            "heb": "רפלקציה וסגירה",
+            "vid": "",
+            "cat": "Text",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": ""
+          }
+        ]
+      ]
+    },
+    {
+      "n": 3,
+      "t": "התבססות",
+      "te": "Grounding",
+      "p": "A",
+      "th": "אינטרוספציה. עמידה קרבית. ג׳אב ראשון.",
+      "s": [
+        [
+          {
+            "id": "ttc6dp1qr",
+            "name": "Interoception",
+            "heb": "אינטרוספציה",
+            "vid": "",
+            "cat": "Cat 1",
+            "fl": null,
+            "fn": "Ch.0 reuse",
+            "txt": "",
+            "fnum": "2"
+          }
+        ],
+        [
+          {
+            "id": "szntfh9sf",
+            "name": "Breathing Pause — Tension",
+            "heb": "עצירת נשימה — זיהוי מתח",
+            "vid": "3.3",
+            "cat": "Cat 3",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "5"
+          }
+        ],
+        [
+          {
+            "id": "u4euvjori",
+            "name": "Mind-Body Scan (Standing)",
+            "heb": "סריקת גוף בעמידה",
+            "vid": "2.2",
+            "cat": "Cat 2",
+            "fl": null,
+            "fn": "Reuse",
+            "txt": "",
+            "fnum": "50"
+          }
+        ],
+        [
+          {
+            "id": "fa8ckwnxb",
+            "name": "Combat Stance — Regular",
+            "heb": "עמידה קרבית — רגילה",
+            "vid": "5.2",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "28"
+          },
+          {
+            "id": "6zm43m8nk",
+            "name": "Combat Stance Half Steps",
+            "heb": "חצאי צעדים בעמידה קרבית",
+            "vid": "5.4",
+            "cat": "Cat 5",
+            "fl": "decision",
+            "fn": "Not sure if good for course",
+            "txt": "",
+            "fnum": "30"
+          }
+        ],
+        [
+          {
+            "id": "ci3pj6s63",
+            "name": "Jab",
+            "heb": "ג'אב — אגרוף קדמי",
+            "vid": "7.4",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "59"
+          },
+          {
+            "id": "4fo8ahr7j",
+            "name": "Jab — Execution Only",
+            "heb": "ג'אב — ביצוע בלבד",
+            "vid": "7.5*",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "Bonus follow-along",
+            "txt": "",
+            "fnum": "51"
+          }
+        ],
+        [
+          {
+            "id": "mofidofip",
+            "name": "INTEGRATION: Scan + Breathing",
+            "heb": "סריקת גוף + נשימה 5/5",
+            "vid": "2.4",
+            "cat": "Cat 2",
+            "fl": null,
+            "fn": "Reuse",
+            "txt": "",
+            "fnum": "55"
+          }
+        ],
+        [
+          {
+            "id": "q94o4jwj1",
+            "name": "Reflection & Closure",
+            "heb": "רפלקציה וסגירה",
+            "vid": "",
+            "cat": "Text",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": ""
+          }
+        ]
+      ]
+    },
+    {
+      "n": 4,
+      "t": "שליטה",
+      "te": "Control",
+      "p": "A",
+      "th": "תגובת הסטרס. נשימה עם צליל. קרוס.",
+      "s": [
+        [
+          {
+            "id": "sxzr2te0v",
+            "name": "Stress Response as a Wave",
+            "heb": "תגובת הסטרס כגל",
+            "vid": "1.4",
+            "cat": "Cat 1",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "11"
+          }
+        ],
+        [
+          {
+            "id": "6cz667viy",
+            "name": "Breathing with Sound",
+            "heb": "נשימה עם צליל",
+            "vid": "3.4",
+            "cat": "Cat 3",
+            "fl": null,
+            "fn": "Vagus stimulation",
+            "txt": "",
+            "fnum": "4"
+          },
+          {
+            "id": "0wobjjpcz",
+            "name": "Relaxation on Foam Rollers",
+            "heb": "הרפייה על גלילים",
+            "vid": "4.8",
+            "cat": "Cat 4",
+            "fl": null,
+            "fn": "Long video. Foam roller.",
+            "txt": "",
+            "fnum": "47"
+          }
+        ],
+        [
+          {
+            "id": "xb823ft72",
+            "name": "The Secret Smile",
+            "heb": "החיוך הנסתר",
+            "vid": "9.2",
+            "cat": "Cat 9",
+            "fl": null,
+            "fn": "Audio-primary somatic",
+            "txt": "",
+            "fnum": "21"
+          }
+        ],
+        [
+          {
+            "id": "hinxz7vhl",
+            "name": "Combat Stance Stepping",
+            "heb": "סטפינג בעמידה קרבית",
+            "vid": "5.3",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "29"
+          },
+          {
+            "id": "gyqxbv1f7",
+            "name": "Shoulder Paddles — Bi-Lateral",
+            "heb": "מטקות כתפיים — בילטראלית",
+            "vid": "5.8",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "32"
+          }
+        ],
+        [
+          {
+            "id": "0opipuyp1",
+            "name": "Cross",
+            "heb": "קרוס — אגרוף אחורי",
+            "vid": "7.6",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "60"
+          },
+          {
+            "id": "iii38u88i",
+            "name": "Cross — Execution Only",
+            "heb": "קרוס — ביצוע בלבד",
+            "vid": "7.7*",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "Bonus follow-along",
+            "txt": "",
+            "fnum": "52"
+          }
+        ],
+        [
+          {
+            "id": "e8knmc9y6",
+            "name": "INTEGRATION: Stance+Paddles+5/5",
+            "heb": "עמידה + מטקות + נשימה 5/5",
+            "vid": "5.13",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "38"
+          }
+        ],
+        [
+          {
+            "id": "81456kdfr",
+            "name": "Reflection & Closure",
+            "heb": "רפלקציה וסגירה",
+            "vid": "",
+            "cat": "Text",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": ""
+          }
+        ]
+      ]
+    },
+    {
+      "n": 5,
+      "t": "הרחבה",
+      "te": "Expansion",
+      "p": "B",
+      "th": "מהו סומטי. הצלפה סרעפתית. מטקות קרב.",
+      "s": [
+        [
+          {
+            "id": "7uq8yh0ct",
+            "name": "What Is Somatic?",
+            "heb": "מהו סומטי?",
+            "vid": "1.9",
+            "cat": "Cat 1",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "14"
+          }
+        ],
+        [
+          {
+            "id": "zweqc8kd6",
+            "name": "Diaphragmatic Slingshot",
+            "heb": "הצלפה סרעפתית",
+            "vid": "3.5",
+            "cat": "Cat 3",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "56"
+          }
+        ],
+        [
+          {
+            "id": "66aoijkru",
+            "name": "Multidirectional Shake",
+            "heb": "שייק לכמה כיוונים",
+            "vid": "4.4",
+            "cat": "Cat 4",
+            "fl": null,
+            "fn": "Follow-along",
+            "txt": "",
+            "fnum": "24"
+          },
+          {
+            "id": "pfmthehiz",
+            "name": "Shake With Weight Transfer",
+            "heb": "שייק עם העברות משקל",
+            "vid": "4.2",
+            "cat": "Cat 4",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "23"
+          }
+        ],
+        [
+          {
+            "id": "49wc23odb",
+            "name": "Paddles — Combat Stance",
+            "heb": "מטקות — בעמידה קרבית",
+            "vid": "5.11",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "36"
+          },
+          {
+            "id": "kovqnqz2y",
+            "name": "Paddles Combat (Exec)",
+            "heb": "מטקות קרב — ביצוע",
+            "vid": "5.12*",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "Execution clip — bonus",
+            "txt": "",
+            "fnum": "37"
+          }
+        ],
+        [
+          {
+            "id": "j18z20v6q",
+            "name": "INTEGRATION: Paddles+Jab+Cross",
+            "heb": "מטקות + צעידה + ג'אב + קרוס",
+            "vid": "7.8*",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "53"
+          }
+        ],
+        [
+          {
+            "id": "4g8tfz8m8",
+            "name": "Paddle Step + Slingshots",
+            "heb": "מטקות כתפיים + הצלפה",
+            "vid": "6.4",
+            "cat": "Cat 6",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "58"
+          },
+          {
+            "id": "5l74g23t5",
+            "name": "INTEGRATION: Paddles+Boxing+Breath",
+            "heb": "מטקות + צעידה + איגרוף + נשימה",
+            "vid": "7.9",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "61"
+          }
+        ],
+        [
+          {
+            "id": "r0lzaaz4n",
+            "name": "Reflection & Closure",
+            "heb": "רפלקציה וסגירה",
+            "vid": "",
+            "cat": "Text",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": ""
+          }
+        ]
+      ]
+    },
+    {
+      "n": 6,
+      "t": "מבנה ותנועה",
+      "te": "Structure & Motion",
+      "p": "B",
+      "th": "מדוע הטכנולוגיה. 3 קומבינציות. אימון כוח.",
+      "s": [
+        [
+          {
+            "id": "q8snphfxg",
+            "name": "Why This Technology?",
+            "heb": "מדוע הטכנולוגיה הזו?",
+            "vid": "5.7",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "Educational — methodology",
+            "txt": "",
+            "fnum": "33"
+          }
+        ],
+        [
+          {
+            "id": "3d1h0ilhn",
+            "name": "Breath Tracking (Saika)",
+            "heb": "מעקב אחר הנשימה",
+            "vid": "2.3",
+            "cat": "Cat 2",
+            "fl": "check",
+            "fn": "File #49 needs trim",
+            "txt": "",
+            "fnum": "49"
+          }
+        ],
+        [
+          {
+            "id": "zg65vnich",
+            "name": "Push Up Static Hold",
+            "heb": "החזקת שכיבות סמיכה",
+            "vid": "8.4",
+            "cat": "Cat 8",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "66"
+          },
+          {
+            "id": "i52nasfh5",
+            "name": "Sit Up Static Hold",
+            "heb": "החזקת כפיפות בטן",
+            "vid": "8.5",
+            "cat": "Cat 8",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "67"
+          },
+          {
+            "id": "rx72o5et6",
+            "name": "Squat Static Hold",
+            "heb": "החזקת סקוואט",
+            "vid": "8.6",
+            "cat": "Cat 8",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "68"
+          }
+        ],
+        [
+          {
+            "id": "bv3vbwjex",
+            "name": "Paddles — Ipsi Entries",
+            "heb": "מטקות — כניסות איפסי-לטרליות",
+            "vid": "5.10",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "35"
+          },
+          {
+            "id": "1g36uwspf",
+            "name": "Combat Stance Step+Move",
+            "heb": "???",
+            "vid": "5.5",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "Not filmed — potential re-shoot",
+            "txt": "",
+            "fnum": "31"
+          }
+        ],
+        [
+          {
+            "id": "5sw81haca",
+            "name": "Combination 1: Kalachnikov",
+            "heb": "קומבינציה 1: קלצ'",
+            "vid": "7.10",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "62"
+          },
+          {
+            "id": "zl5mh4u28",
+            "name": "Combination 2: Mailman",
+            "heb": "קומבינציה 2: דוור",
+            "vid": "7.11",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "63"
+          },
+          {
+            "id": "hu07rs01o",
+            "name": "Combination 3: Paradidle",
+            "heb": "קומבינציה 3: פרדידל",
+            "vid": "7.12",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "64"
+          }
+        ],
+        [],
+        [
+          {
+            "id": "folooh682",
+            "name": "Reflection & Closure",
+            "heb": "רפלקציה וסגירה",
+            "vid": "",
+            "cat": "Text",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": ""
+          }
+        ]
+      ]
+    },
+    {
+      "n": 7,
+      "t": "קואורדינציה",
+      "te": "Coordination",
+      "p": "B",
+      "th": "מערכת עצבים. שייקים מתקדמים. מטקות איפסי. צל קומבינציות.",
+      "s": [
+        [
+          {
+            "id": "tlhw7wug7",
+            "name": "Autonomous Nervous System",
+            "heb": "מערכת העצבים האוטונומית",
+            "vid": "",
+            "cat": "Cat 1",
+            "fl": null,
+            "fn": "Ch.0 reuse",
+            "txt": "",
+            "fnum": "9"
+          }
+        ],
+        [
+          {
+            "id": "60q643uij",
+            "name": "Diaphragmatic Breathing 5/5",
+            "heb": "נשימה סרעפתית 5/5",
+            "vid": "3.1",
+            "cat": "Cat 3",
+            "fl": null,
+            "fn": "Reuse — ground",
+            "txt": "",
+            "fnum": "3"
+          }
+        ],
+        [
+          {
+            "id": "jb5c08smb",
+            "name": "Heavy Hand — Honey Pool",
+            "heb": "היד הכבדה — בריכת הדבש",
+            "vid": "9.1",
+            "cat": "Cat 9",
+            "fl": null,
+            "fn": "Audio-primary somatic",
+            "txt": "",
+            "fnum": "19"
+          }
+        ],
+        [
+          {
+            "id": "igsgroqyh",
+            "name": "Shake + Stroke",
+            "heb": "שייק + הברשה",
+            "vid": "4.6",
+            "cat": "Cat 4",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "26"
+          },
+          {
+            "id": "kidf804uo",
+            "name": "Shake + Patting",
+            "heb": "שייק + טפיחה",
+            "vid": "4.5",
+            "cat": "Cat 4",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "25"
+          },
+          {
+            "id": "rrm2xjv0p",
+            "name": "Standing Rotational Shake",
+            "heb": "שייק סיבובי בעמידה",
+            "vid": "4.7",
+            "cat": "Cat 4",
+            "fl": null,
+            "fn": "Advanced tension release",
+            "txt": "",
+            "fnum": "27"
+          }
+        ],
+        [
+          {
+            "id": "5wfisukqx",
+            "name": "Paddles — Ipsi Step Stationary",
+            "heb": "מטקות — איפסי במקום",
+            "vid": "5.15",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "39"
+          },
+          {
+            "id": "n6ergvsee",
+            "name": "Paddles Ipsi (Exec)",
+            "heb": "מטקות איפסי — ביצוע",
+            "vid": "5.17*",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "Execution clip — bonus",
+            "txt": "",
+            "fnum": "41"
+          },
+          {
+            "id": "d4opav033",
+            "name": "Paddles — Ipsi Step F/R/L",
+            "heb": "מטקות — איפסי קדימה/ימין/שמאל",
+            "vid": "5.16",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "40"
+          }
+        ],
+        [
+          {
+            "id": "coixg05t8",
+            "name": "INTEGRATION: All Combos Shadow",
+            "heb": "3 קומבינציות הידיים",
+            "vid": "7.13",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "65"
+          }
+        ],
+        [
+          {
+            "id": "lj05ki47v",
+            "name": "Reflection & Closure",
+            "heb": "רפלקציה וסגירה",
+            "vid": "",
+            "cat": "Text",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": ""
+          }
+        ]
+      ]
+    },
+    {
+      "n": 8,
+      "t": "עוצמה",
+      "te": "Power",
+      "p": "B",
+      "th": "השהיית תגובה. הגנות. מטקות קונטרה.",
+      "s": [
+        [
+          {
+            "id": "igcwd0dep",
+            "name": "Response Delay Concept",
+            "heb": "עקרון השהיית התגובה",
+            "vid": "1.5",
+            "cat": "Cat 1",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "12"
+          }
+        ],
+        [
+          {
+            "id": "uspakmlq7",
+            "name": "Diaphragmatic Breathing 10/10",
+            "heb": "נשימה סרעפתית 10/10",
+            "vid": "3.2",
+            "cat": "Cat 3",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "6,7,8"
+          }
+        ],
+        [],
+        [
+          {
+            "id": "zqmhtqc8h",
+            "name": "Paddles — Contra Entries",
+            "heb": "מטקות — כניסות קונטרה-לטרליות",
+            "vid": "5.9",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "34"
+          },
+          {
+            "id": "gzxh5cjiy",
+            "name": "Paddles — Contra Step Stationary",
+            "heb": "מטקות — קונטרה במקום",
+            "vid": "5.18",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "42"
+          },
+          {
+            "id": "v4rwqnust",
+            "name": "Paddles Contra (Exec)",
+            "heb": "מטקות קונטרה — ביצוע",
+            "vid": "5.19*",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "Execution clip — bonus",
+            "txt": "",
+            "fnum": "43"
+          }
+        ],
+        [
+          {
+            "id": "vzamjaynl",
+            "name": "Slipping — Ipsilateral",
+            "heb": "סליפינג — איפסילטרלי",
+            "vid": "7.14",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "72"
+          },
+          {
+            "id": "0lvj0skza",
+            "name": "Slipping — Contralateral",
+            "heb": "סליפינג — קונטרלטרלי",
+            "vid": "7.15",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "73"
+          },
+          {
+            "id": "790vwvmhw",
+            "name": "Weaving",
+            "heb": "וויבינג (התכופפות)",
+            "vid": "7.16",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "74"
+          }
+        ],
+        [
+          {
+            "id": "hzz7826fa",
+            "name": "INTEGRATION: Sit Ups+5/5",
+            "heb": "כפיפות בטן + נשימה 5/5",
+            "vid": "8.8",
+            "cat": "Cat 8",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "70"
+          },
+          {
+            "id": "89fvgxwsm",
+            "name": "INTEGRATION: Slingshots+Shake",
+            "heb": "הצלפה + שייק — שילוב",
+            "vid": "6.3",
+            "cat": "Cat 6",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "57"
+          }
+        ],
+        [
+          {
+            "id": "ds9ynhkft",
+            "name": "Reflection & Closure",
+            "heb": "רפלקציה וסגירה",
+            "vid": "",
+            "cat": "Text",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": ""
+          }
+        ]
+      ]
+    },
+    {
+      "n": 9,
+      "t": "תגובה",
+      "te": "Response",
+      "p": "C",
+      "th": "הרחבת המעבד. מטקות קונטרה. כל ההגנות.",
+      "s": [
+        [
+          {
+            "id": "d5v6gu694",
+            "name": "Expanding Our Processor",
+            "heb": "הרחבת המעבד שלנו",
+            "vid": "1.8",
+            "cat": "Cat 1",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "13"
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "id": "r92kgi9q0",
+            "name": "Paddles — Contra Step F/R/L",
+            "heb": "מטקות — קונטרה קדימה/ימין/שמאל",
+            "vid": "5.20",
+            "cat": "Cat 5",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "44"
+          }
+        ],
+        [
+          {
+            "id": "j8dkhe2fc",
+            "name": "INTEGRATION: All Defensive",
+            "heb": "כל מהלכי ההגנה",
+            "vid": "7.17",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "75"
+          }
+        ],
+        [
+          {
+            "id": "zyp5n2dhd",
+            "name": "INTEGRATION: Squats+5/5",
+            "heb": "סקוואטים + נשימה 5/5",
+            "vid": "8.9",
+            "cat": "Cat 8",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "71"
+          }
+        ],
+        [
+          {
+            "id": "3sp3wdhmt",
+            "name": "Reflection & Closure",
+            "heb": "רפלקציה וסגירה",
+            "vid": "",
+            "cat": "Text",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": ""
+          }
+        ]
+      ]
+    },
+    {
+      "n": 10,
+      "t": "שילוב",
+      "te": "Combination",
+      "p": "C",
+      "th": "נשימה תחת עומס. כל אפשרויות האיגרוף.",
+      "s": [
+        [
+          {
+            "id": "lfdtg8s3i",
+            "name": "Text-based intro",
+            "heb": "הקדמה לשיעור",
+            "vid": "",
+            "cat": "Text",
+            "fl": "gap",
+            "fn": "Write class intro",
+            "txt": "",
+            "fnum": ""
+          }
+        ],
+        [
+          {
+            "id": "vozi36w3o",
+            "name": "Breathing Pause — Tension",
+            "heb": "עצירת נשימה — זיהוי מתח",
+            "vid": "3.3",
+            "cat": "Cat 3",
+            "fl": null,
+            "fn": "Reuse under load",
+            "txt": "",
+            "fnum": "5"
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "id": "8f6ufmbjh",
+            "name": "INTEGRATION: All Boxing Options",
+            "heb": "כל אפשרויות האיגרוף",
+            "vid": "7.18",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "76"
+          }
+        ],
+        [
+          {
+            "id": "4ucv9a0kp",
+            "name": "INTEGRATION: Push Ups+5/5",
+            "heb": "שכיבות סמיכה + נשימה 5/5",
+            "vid": "8.7",
+            "cat": "Cat 8",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "69"
+          }
+        ],
+        [
+          {
+            "id": "4r6euyf4x",
+            "name": "Reflection & Closure",
+            "heb": "רפלקציה וסגירה",
+            "vid": "",
+            "cat": "Text",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": ""
+          }
+        ]
+      ]
+    },
+    {
+      "n": 11,
+      "t": "חוסן",
+      "te": "Resilience",
+      "p": "C",
+      "th": "נשימה 10/10. גלילי קצף. כל האיגרוף + נשימה.",
+      "s": [
+        [
+          {
+            "id": "gwbew2hqn",
+            "name": "Text-based intro",
+            "heb": "הקדמה לשיעור",
+            "vid": "",
+            "cat": "Text",
+            "fl": "gap",
+            "fn": "Write class intro",
+            "txt": "",
+            "fnum": ""
+          }
+        ],
+        [
+          {
+            "id": "gb9cg759i",
+            "name": "Diaphragmatic Breathing 10/10",
+            "heb": "נשימה סרעפתית 10/10",
+            "vid": "3.2",
+            "cat": "Cat 3",
+            "fl": null,
+            "fn": "Reuse — deepen",
+            "txt": "",
+            "fnum": "6,7,8"
+          },
+          {
+            "id": "hprxqskpj",
+            "name": "Relaxation on Foam Rollers",
+            "heb": "הרפייה על גלילים",
+            "vid": "4.8",
+            "cat": "Cat 4",
+            "fl": null,
+            "fn": "Reuse",
+            "txt": "",
+            "fnum": "47"
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "id": "qfi46f623",
+            "name": "INTEGRATION: All Boxing+5/5",
+            "heb": "כל האיגרוף + נשימה 5/5",
+            "vid": "7.19",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "77"
+          }
+        ],
+        [
+          {
+            "id": "rbyxwfw5n",
+            "name": "INTEGRATION: Sit Ups+5/5",
+            "heb": "כפיפות בטן + נשימה 5/5",
+            "vid": "8.8",
+            "cat": "Cat 8",
+            "fl": null,
+            "fn": "Reuse",
+            "txt": "",
+            "fnum": "70"
+          },
+          {
+            "id": "cplmps4be",
+            "name": "INTEGRATION: Push Ups+5/5",
+            "heb": "שכיבות סמיכה + נשימה 5/5",
+            "vid": "8.7",
+            "cat": "Cat 8",
+            "fl": null,
+            "fn": "Reuse",
+            "txt": "",
+            "fnum": "69"
+          },
+          {
+            "id": "fyxps7mnj",
+            "name": "INTEGRATION: Squats+5/5",
+            "heb": "סקוואטים + נשימה 5/5",
+            "vid": "8.9",
+            "cat": "Cat 8",
+            "fl": null,
+            "fn": "Reuse",
+            "txt": "",
+            "fnum": "71"
+          }
+        ],
+        [
+          {
+            "id": "cycpdhzcy",
+            "name": "Reflection & Closure",
+            "heb": "רפלקציה וסגירה",
+            "vid": "",
+            "cat": "Text",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": ""
+          }
+        ]
+      ]
+    },
+    {
+      "n": 12,
+      "t": "אינטגרציה מלאה",
+      "te": "Full Integration",
+      "p": "C",
+      "th": "כל הכלים ביחד. מורכבות מירבית. סגירת קורס.",
+      "s": [
+        [
+          {
+            "id": "2qnd8wm1l",
+            "name": "Text-based intro",
+            "heb": "הקדמה לשיעור",
+            "vid": "",
+            "cat": "Text",
+            "fl": "gap",
+            "fn": "Final class intro",
+            "txt": "",
+            "fnum": ""
+          }
+        ],
+        [
+          {
+            "id": "0du4opxuq",
+            "name": "Diaphragmatic Breathing 10/10",
+            "heb": "נשימה סרעפתית 10/10",
+            "vid": "3.2",
+            "cat": "Cat 3",
+            "fl": null,
+            "fn": "Reuse — full depth",
+            "txt": "",
+            "fnum": "6,7,8"
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "id": "xmo09jslo",
+            "name": "INTEGRATION: All Boxing+5/5",
+            "heb": "כל האיגרוף + נשימה 5/5",
+            "vid": "7.19",
+            "cat": "Cat 7",
+            "fl": null,
+            "fn": "Reuse",
+            "txt": "",
+            "fnum": "77"
+          }
+        ],
+        [
+          {
+            "id": "d13yneceq",
+            "name": "INTEGRATION: Sit Ups+5/5",
+            "heb": "כפיפות בטן + נשימה 5/5",
+            "vid": "8.8",
+            "cat": "Cat 8",
+            "fl": null,
+            "fn": "Reuse",
+            "txt": "",
+            "fnum": "70"
+          },
+          {
+            "id": "rjbex9mnj",
+            "name": "INTEGRATION: Squats+5/5",
+            "heb": "סקוואטים + נשימה 5/5",
+            "vid": "8.9",
+            "cat": "Cat 8",
+            "fl": null,
+            "fn": "Reuse",
+            "txt": "",
+            "fnum": "71"
+          },
+          {
+            "id": "sfynmdz9e",
+            "name": "INTEGRATION: Push Ups+5/5",
+            "heb": "שכיבות סמיכה + נשימה 5/5",
+            "vid": "8.7",
+            "cat": "Cat 8",
+            "fl": null,
+            "fn": "",
+            "txt": "",
+            "fnum": "69"
+          }
+        ],
+        [
+          {
+            "id": "msnpbaled",
+            "name": "Reflection & Final Closure",
+            "heb": "רפלקציה וסגירה סופית",
+            "vid": "",
+            "cat": "Text",
+            "fl": null,
+            "fn": "Extended — course closure",
+            "txt": "",
+            "fnum": ""
+          }
+        ]
+      ]
+    }
+  ],
+  "pool": []
+}

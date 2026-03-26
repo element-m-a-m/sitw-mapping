@@ -84,6 +84,38 @@ function App(){
   const exportData=()=>{const data=JSON.stringify({cls,pool},null,2);const blob=new Blob([data],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='sitw-mapping-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);};
   const importData=(e)=>{const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=(ev)=>{try{const data=JSON.parse(ev.target.result);if(data.cls&&data.pool){pushH(cls,pool);setCls(data.cls);setPool(data.pool);}else alert('Invalid file format');}catch(err){alert('Error: '+err.message);}};reader.readAsText(file);e.target.value='';};
 
+  // GitHub Publish
+  const REPO_OWNER="element-m-a-m",REPO_NAME="sitw-mapping",DATA_FILE="data.json";
+  const[ghToken,setGhToken]=useState(()=>localStorage.getItem('sitw_gh_token')||'');
+  const[pubStatus,setPubStatus]=useState('');
+  const[showTokenInput,setShowTokenInput]=useState(false);
+  const saveToken=(t)=>{setGhToken(t);localStorage.setItem('sitw_gh_token',t);};
+  const publish=async()=>{
+    if(!ghToken){setShowTokenInput(true);return;}
+    setPubStatus('publishing...');
+    try{
+      const content=btoa(unescape(encodeURIComponent(JSON.stringify({cls,pool},null,2))));
+      const url=`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE}`;
+      const existing=await fetch(url,{headers:{Authorization:`token ${ghToken}`}});
+      const eData=existing.ok?await existing.json():null;
+      const sha=eData?.sha||undefined;
+      const res=await fetch(url,{method:'PUT',headers:{Authorization:`token ${ghToken}`,'Content-Type':'application/json'},
+        body:JSON.stringify({message:`Update mapping — ${new Date().toLocaleString('he-IL')}`,content,sha})});
+      if(!res.ok){const err=await res.json();throw new Error(err.message||res.statusText);}
+      setPubStatus('published!');setTimeout(()=>setPubStatus(''),4000);
+    }catch(err){setPubStatus('error: '+err.message);setTimeout(()=>setPubStatus(''),6000);}
+  };
+
+  // Load from data.json on first mount (if no localStorage)
+  const[dataLoaded,setDataLoaded]=useState(false);
+  useEffect(()=>{
+    if(localStorage.getItem('sitw_cls')){setDataLoaded(true);return;}
+    fetch('data.json').then(r=>r.ok?r.json():null).then(data=>{
+      if(data?.cls){setCls(data.cls);if(data.pool)setPool(data.pool);}
+      setDataLoaded(true);
+    }).catch(()=>setDataLoaded(true));
+  },[]);
+
   /* ── Auto-scroll during drag ── */
   useEffect(()=>{
     const EDGE=60,SPEED=12;
@@ -195,9 +227,24 @@ function App(){
         <button onClick={exportData} style={{padding:"3px 8px",fontSize:10,fontWeight:600,borderRadius:4,border:"1px solid #475569",background:"#1E293B",color:"#E2E8F0",cursor:"pointer"}} title="Export JSON">💾</button>
         <button onClick={()=>fileRef.current?.click()} style={{padding:"3px 8px",fontSize:10,fontWeight:600,borderRadius:4,border:"1px solid #475569",background:"#1E293B",color:"#E2E8F0",cursor:"pointer"}} title="Import JSON">📂</button>
         <input ref={fileRef} type="file" accept=".json" onChange={importData} style={{display:"none"}}/>
-        <span style={{fontSize:9,color:"#22C55E",marginLeft:4}}>auto-saved</span>
+        <span style={{width:1,height:16,background:"#475569",margin:"0 4px"}}/>
+        <button onClick={publish} style={{padding:"3px 10px",fontSize:10,fontWeight:700,borderRadius:4,border:"1px solid #22C55E",background:pubStatus==='published!'?"#166534":"#1E293B",color:"#4ADE80",cursor:"pointer"}} title="Publish to GitHub (all users see changes)">Publish</button>
+        {pubStatus&&<span style={{fontSize:9,color:pubStatus.startsWith('error')?'#F87171':pubStatus==='published!'?'#4ADE80':'#FBBF24',marginLeft:4}}>{pubStatus}</span>}
+        {!pubStatus&&<span style={{fontSize:9,color:"#475569",marginLeft:4}}>auto-saved locally</span>}
       </div>
     </div>
+    {showTokenInput&&<div className="no-print" style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,.6)",zIndex:999,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setShowTokenInput(false)}>
+      <div onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:12,padding:24,maxWidth:420,width:"90%",boxShadow:"0 20px 60px rgba(0,0,0,.3)"}}>
+        <h3 style={{margin:"0 0 8px",fontSize:16}}>GitHub Token Required</h3>
+        <p style={{fontSize:12,color:"#64748B",margin:"0 0 12px"}}>Enter a GitHub Personal Access Token with <b>repo</b> scope to publish changes. The token is stored only in your browser's localStorage.</p>
+        <p style={{fontSize:11,color:"#64748B",margin:"0 0 12px"}}>Create one at: <a href="https://github.com/settings/tokens/new?scopes=repo&description=SITW+Mapping+Publish" target="_blank" rel="noopener" style={{color:"#2563EB"}}>github.com/settings/tokens</a></p>
+        <input id="gh-token-input" type="password" placeholder="ghp_xxxxxxxxxxxx" style={{width:"100%",padding:"8px 12px",fontSize:13,borderRadius:6,border:"1px solid #D1D5DB",boxSizing:"border-box"}} defaultValue={ghToken}/>
+        <div style={{display:"flex",gap:8,marginTop:12,justifyContent:"flex-end"}}>
+          <button onClick={()=>setShowTokenInput(false)} style={{padding:"6px 16px",fontSize:12,borderRadius:6,border:"1px solid #D1D5DB",background:"#fff",cursor:"pointer"}}>Cancel</button>
+          <button onClick={()=>{const v=document.getElementById('gh-token-input').value.trim();if(v){saveToken(v);setShowTokenInput(false);publish();}}} style={{padding:"6px 16px",fontSize:12,fontWeight:700,borderRadius:6,border:"none",background:"#2563EB",color:"#fff",cursor:"pointer"}}>Save & Publish</button>
+        </div>
+      </div>
+    </div>}
     {/* STATS */}
     <div className="no-print" style={{background:"#fff",borderBottom:"1px solid #E2E8F0",padding:"5px 14px",display:"flex",gap:12,flexWrap:"wrap",fontSize:10}}>
       <span><strong>{stats.total}</strong> תרגילים</span><span style={{color:"#DC2626"}}>⛔ <strong>{stats.bl}</strong></span><span style={{color:"#D97706"}}>⚠️ <strong>{stats.ch}</strong></span><span style={{color:"#2563EB"}}>📋 <strong>{stats.gap}</strong></span><span style={{color:"#6B7280"}}>🎯 <strong>{pool.length}</strong> במאגר</span>
