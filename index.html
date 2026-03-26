@@ -14,6 +14,7 @@ html{font-size:13px}body{font-family:'Assistant','Segoe UI',sans-serif;backgroun
 ::-webkit-scrollbar{height:7px;width:7px}::-webkit-scrollbar-track{background:#E2E8F0;border-radius:4px}::-webkit-scrollbar-thumb{background:#94A3B8;border-radius:4px}
 .mono{font-family:'DM Mono',monospace}.heb{direction:rtl;text-align:right}
 button,input,select,textarea{font-family:inherit}[draggable=true]{-webkit-user-drag:element}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
 @media print{
   @page{size:A4 landscape;margin:8mm}html{font-size:8px!important}
   body{background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -89,7 +90,17 @@ function App(){
   const[ghToken,setGhToken]=useState(()=>localStorage.getItem('sitw_gh_token')||'');
   const[pubStatus,setPubStatus]=useState('');
   const[showTokenInput,setShowTokenInput]=useState(false);
+  const[dirty,setDirty]=useState(false);
+  const lastPublished=useRef(null);
   const saveToken=(t)=>{setGhToken(t);localStorage.setItem('sitw_gh_token',t);};
+
+  // Track unpublished changes — any cls/pool mutation after initial load marks dirty
+  const mountedRef=useRef(false);
+  useEffect(()=>{if(!mountedRef.current){mountedRef.current=true;return;}setDirty(true);},[cls,pool]);
+
+  // Warn before leaving with unpublished changes
+  useEffect(()=>{const h=e=>{if(dirty){e.preventDefault();e.returnValue='';}};window.addEventListener('beforeunload',h);return()=>window.removeEventListener('beforeunload',h);},[dirty]);
+
   const publish=async()=>{
     if(!ghToken){setShowTokenInput(true);return;}
     setPubStatus('publishing...');
@@ -102,7 +113,7 @@ function App(){
       const res=await fetch(url,{method:'PUT',headers:{Authorization:`token ${ghToken}`,'Content-Type':'application/json'},
         body:JSON.stringify({message:`Update mapping — ${new Date().toLocaleString('he-IL')}`,content,sha})});
       if(!res.ok){const err=await res.json();throw new Error(err.message||res.statusText);}
-      setPubStatus('published!');setTimeout(()=>setPubStatus(''),4000);
+      setDirty(false);setPubStatus('published!');setTimeout(()=>setPubStatus(''),4000);
     }catch(err){setPubStatus('error: '+err.message);setTimeout(()=>setPubStatus(''),6000);}
   };
 
@@ -228,9 +239,10 @@ function App(){
         <button onClick={()=>fileRef.current?.click()} style={{padding:"3px 8px",fontSize:10,fontWeight:600,borderRadius:4,border:"1px solid #475569",background:"#1E293B",color:"#E2E8F0",cursor:"pointer"}} title="Import JSON">📂</button>
         <input ref={fileRef} type="file" accept=".json" onChange={importData} style={{display:"none"}}/>
         <span style={{width:1,height:16,background:"#475569",margin:"0 4px"}}/>
-        <button onClick={publish} style={{padding:"3px 10px",fontSize:10,fontWeight:700,borderRadius:4,border:"1px solid #22C55E",background:pubStatus==='published!'?"#166534":"#1E293B",color:"#4ADE80",cursor:"pointer"}} title="Publish to GitHub (all users see changes)">Publish</button>
+        <button onClick={publish} style={{padding:"3px 10px",fontSize:10,fontWeight:700,borderRadius:4,border:dirty?"2px solid #F59E0B":"1px solid #22C55E",background:pubStatus==='published!'?"#166534":dirty?"#78350F":"#1E293B",color:dirty?"#FCD34D":"#4ADE80",cursor:"pointer",animation:dirty?"pulse 2s infinite":"none"}} title="Publish to GitHub (all users see changes)">{dirty?"Publish *":"Publish"}</button>
         {pubStatus&&<span style={{fontSize:9,color:pubStatus.startsWith('error')?'#F87171':pubStatus==='published!'?'#4ADE80':'#FBBF24',marginLeft:4}}>{pubStatus}</span>}
-        {!pubStatus&&<span style={{fontSize:9,color:"#475569",marginLeft:4}}>auto-saved locally</span>}
+        {!pubStatus&&dirty&&<span style={{fontSize:9,color:"#FBBF24",marginLeft:4}}>unsaved changes</span>}
+        {!pubStatus&&!dirty&&<span style={{fontSize:9,color:"#475569",marginLeft:4}}>all published</span>}
       </div>
     </div>
     {showTokenInput&&<div className="no-print" style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,.6)",zIndex:999,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setShowTokenInput(false)}>
